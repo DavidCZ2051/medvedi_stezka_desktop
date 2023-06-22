@@ -174,12 +174,52 @@ class _TeamsState extends State<Teams> {
                   ),
                   for (Team team in selectedCompetition!.teams)
                     Card(
-                      child: ListTile(
-                        leading: Text(
-                          "${team.number}",
-                          style: const TextStyle(fontSize: 20),
+                      child: InkWell(
+                        onSecondaryTapDown: (TapDownDetails tap) {
+                          // TODO
+                          showMenu(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              tap.globalPosition.dx,
+                              tap.globalPosition.dy,
+                              tap.globalPosition.dx,
+                              tap.globalPosition.dy,
+                            ),
+                            items: [
+                              PopupMenuItem(
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.edit,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Upravit"),
+                                  ],
+                                ),
+                                onTap: () {},
+                              ),
+                              PopupMenuItem(
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Smazat"),
+                                  ],
+                                ),
+                                onTap: () {},
+                              ),
+                            ],
+                          );
+                        },
+                        child: ListTile(
+                          leading: Text(
+                            "${team.number}",
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                          title: Text("${team.category}"),
                         ),
-                        title: Text("${team.category}"),
                       ),
                     ),
                 ],

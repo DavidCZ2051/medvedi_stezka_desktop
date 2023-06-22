@@ -173,8 +173,8 @@ class _ChecksState extends State<Checks> {
                         children: [
                           const Divider(),
                           OutlinedButton(
-                            onPressed: () {
-                              showTimePicker(
+                            onPressed: () async {
+                              TimeOfDay? time = await showTimePicker(
                                 context: context,
                                 cancelText: "Zrušit",
                                 confirmText: "Potvrdit",
@@ -188,51 +188,16 @@ class _ChecksState extends State<Checks> {
                                   minute: 30,
                                 ),
                               );
+                              if (time != null) {
+                                setState(() {
+                                  newCheck["penaltySeconds"] =
+                                      time.hour * 60 + time.minute;
+                                });
+                              }
                             },
-                            child: Text("čas"),
+                            child: Text(
+                                "Trestný čas: ${formatTime(newCheck["penaltySeconds"])}"),
                           ),
-                          /* const SizedBox(height: 12),
-                          const Text(
-                            "Trestný čas",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 20,
-                                ),
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  onSaved: (value) {
-                                    setState(() {
-                                      newCheck["questionCount"] =
-                                          int.tryParse(value ?? "0") ?? 0;
-                                      newCheck["penaltySeconds"] *= 60;
-
-                                      //TODO: Fix the time picker
-                                    });
-                                  },
-                                ),
-                              ),
-                              const Text(":"),
-                              ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 20,
-                                ),
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  onSaved: (value) {
-                                    setState(() {
-                                      newCheck["questionCount"] =
-                                          int.tryParse(value ?? "0") ?? 0;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ), */
                           TextFormField(
                             decoration: const InputDecoration(
                               labelText: "Počet otázek",
@@ -313,8 +278,6 @@ class _ChecksState extends State<Checks> {
               onPressed: () {
                 if (_newCheckFormKey.currentState!.validate()) {
                   _newCheckFormKey.currentState!.save();
-
-                  print(newCheck);
 
                   selectedCompetition!.checks.add(
                     newCheck["type"] == CheckType.deaf

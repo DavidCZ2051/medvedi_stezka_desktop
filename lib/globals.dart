@@ -74,6 +74,7 @@ class Competition {
 
   List<Team> teams = [];
   List<Check> checks = [];
+  List<CompetitionCard> cards = [];
 
   Competition({
     required this.type,
@@ -127,4 +128,14 @@ class Question {
   });
 }
 
-class CompetitionCard {}
+class CompetitionCard {
+  Team team;
+  int waitSeconds;
+
+  List<Check> checks = [];
+
+  CompetitionCard({
+    required this.team,
+    required this.waitSeconds,
+  });
+}

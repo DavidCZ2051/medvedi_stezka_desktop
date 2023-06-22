@@ -4,6 +4,7 @@ import 'package:medvedi_stezka/globals.dart';
 // routes
 import 'package:medvedi_stezka/routes/teams.dart';
 import 'package:medvedi_stezka/routes/checks.dart';
+import 'package:medvedi_stezka/routes/cards.dart';
 
 class Competition extends StatefulWidget {
   const Competition({super.key});
@@ -78,7 +79,7 @@ class _CompetitionState extends State<Competition> {
                 Teams(),
                 Checks(),
                 Placeholder(),
-                Placeholder(),
+                CompetitionCards(),
               ],
             ),
           ),
