@@ -1,5 +1,6 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:medvedi_stezka/functions.dart';
 import 'package:medvedi_stezka/globals.dart';
 
 class Teams extends StatefulWidget {
@@ -131,6 +132,8 @@ class _TeamsState extends State<Teams> {
                 selectedCompetition!.teams.sort(
                   (a, b) => a.number.compareTo(b.number),
                 );
+
+                saveData();
 
                 setState(() {});
                 Navigator.pop(context);

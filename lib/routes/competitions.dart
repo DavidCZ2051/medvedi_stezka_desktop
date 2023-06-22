@@ -1,5 +1,6 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:medvedi_stezka/functions.dart';
 // files
 import 'package:medvedi_stezka/globals.dart';
 
@@ -15,7 +16,30 @@ class _CompetitionsState extends State<Competitions> {
 
   Map<String, dynamic> newCompetition = {};
 
-  void showDataDialog() {}
+  void showDataDialog() async {
+    String data = await getDataString();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Data"),
+        content: SingleChildScrollView(
+          child: TextField(
+            controller: TextEditingController(text: data),
+            readOnly: true,
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: const Text("Zavřít"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   void createCompetitionDialog() {
     newCompetition = {};
@@ -123,6 +147,9 @@ class _CompetitionsState extends State<Competitions> {
                     year: newCompetition["year"],
                   ),
                 );
+
+                saveData();
+
                 setState(() {});
                 Navigator.pop(context);
               }
@@ -150,13 +177,18 @@ class _CompetitionsState extends State<Competitions> {
             onPressed: showDataDialog,
             tooltip: "Zobrazit data",
             icon: const Icon(Icons.data_object),
-            color: Colors.white,
-            // TODO
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
           ),
         ],
-        title: const Text(
+        title: Text(
           "Seznam soutěží",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
+          ),
         ),
       ),
       body: Center(
@@ -172,17 +204,47 @@ class _CompetitionsState extends State<Competitions> {
                   children: <Widget>[
                     for (Competition competition in competitions)
                       Card(
-                        child: ListTile(
-                          leading: const Icon(Icons.emoji_events),
-                          trailing: const Icon(Icons.keyboard_arrow_right),
-                          title: Text(
-                            "${competition.year} ${competition.location}",
-                          ),
-                          subtitle: Text(competition.type.toString()),
-                          onTap: () {
-                            selectedCompetition = competition;
-                            Navigator.pushNamed(context, "/competition");
+                        child: InkWell(
+                          onSecondaryTapDown: (TapDownDetails details) {
+                            showMenu(
+                              context: context,
+                              position: RelativeRect.fromLTRB(
+                                details.globalPosition.dx,
+                                details.globalPosition.dy,
+                                details.globalPosition.dx,
+                                details.globalPosition.dy,
+                              ),
+                              items: [
+                                PopupMenuItem(
+                                  child: const Row(
+                                    children: [
+                                      Icon(Icons.delete),
+                                      SizedBox(width: 8),
+                                      Text("Smazat"),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      competitions.remove(competition);
+                                    });
+                                    saveData();
+                                  },
+                                ),
+                              ],
+                            );
                           },
+                          child: ListTile(
+                            leading: const Icon(Icons.emoji_events),
+                            trailing: const Icon(Icons.keyboard_arrow_right),
+                            title: Text(
+                              "${competition.year} ${competition.location}",
+                            ),
+                            subtitle: Text(competition.type.toString()),
+                            onTap: () {
+                              selectedCompetition = competition;
+                              Navigator.pushNamed(context, "/competition");
+                            },
+                          ),
                         ),
                       ),
                   ],

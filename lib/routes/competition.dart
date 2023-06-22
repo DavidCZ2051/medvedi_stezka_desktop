@@ -26,14 +26,18 @@ class _CompetitionState extends State<Competition> {
             selectedCompetition = null;
             Navigator.pop(context);
           },
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.black,
           icon: const Icon(Icons.arrow_back),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           "${selectedCompetition!.type} ${selectedCompetition!.location} ${selectedCompetition!.year}",
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
           ),
         ),
       ),

@@ -294,7 +294,7 @@ class _ChecksState extends State<Checks> {
                                 ),
                             ],
                           )
-                        : Check(
+                        : LiveCheck(
                             number: newCheck["number"],
                             name: newCheck["name"],
                             type: CheckType.live,
@@ -304,6 +304,8 @@ class _ChecksState extends State<Checks> {
                   selectedCompetition!.checks.sort(
                     (a, b) => a.number.compareTo(b.number),
                   );
+
+                  saveData();
 
                   setState(() {});
                   mySetState();

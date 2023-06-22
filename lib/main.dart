@@ -16,9 +16,14 @@ void main(List<String> args) async {
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
 
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,7 +34,14 @@ class App extends StatelessWidget {
         "/competition": (context) => const Competition(),
       },
       title: "Medvědí stezka",
+      themeMode: ThemeMode.system,
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorSchemeSeed: Colors.green,
+        useMaterial3: true,
+      ),
       theme: ThemeData(
+        brightness: Brightness.light,
         colorSchemeSeed: Colors.green,
         useMaterial3: true,
       ),
