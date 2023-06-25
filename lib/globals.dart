@@ -26,6 +26,22 @@ enum TeamCategory {
         return "Dorost";
     }
   }
+
+  static TeamCategory? fromString(String string) {
+    switch (string) {
+      case "I.":
+        return TeamCategory.one;
+      case "II.":
+        return TeamCategory.two;
+      case "III.":
+        return TeamCategory.three;
+      case "IV.":
+        return TeamCategory.four;
+      case "Dorost":
+        return TeamCategory.grownup;
+    }
+    return null;
+  }
 }
 
 enum CompetitionType {
@@ -71,6 +87,16 @@ enum CheckType {
         return "Živá";
     }
   }
+
+  static CheckType? fromString(String string) {
+    switch (string) {
+      case "Hluchá":
+        return CheckType.deaf;
+      case "Živá":
+        return CheckType.live;
+    }
+    return null;
+  }
 }
 
 class Competition {
@@ -87,7 +113,13 @@ class Competition {
         "location": location,
         "year": year,
         "teams": teams.map((team) => team.toJson()).toList(),
-        "checks": checks.map((check) => check.toJson()).toList(),
+        "checks": [
+          for (Check check in checks)
+            if (check is DeafCheck)
+              check.toJson()
+            else if (check is LiveCheck)
+              check.toJson()
+        ],
         "cards": cards.map((card) => card.toJson()).toList(),
       };
 
@@ -101,7 +133,10 @@ class Competition {
         ],
         checks = [
           for (Map check in json["checks"])
-            Check.fromJson(check as Map<String, dynamic>)
+            if (check["type"] == "Hluchá")
+              DeafCheck.fromJson(check as Map<String, dynamic>)!
+            else
+              LiveCheck.fromJson(check as Map<String, dynamic>)!
         ],
         cards = [
           for (Map card in json["cards"])
@@ -126,7 +161,7 @@ class Team {
 
   Team.fromJson(Map<String, dynamic> json)
       : number = json["number"],
-        category = json["category"];
+        category = TeamCategory.fromString(json["category"])!;
 
   Team({
     required this.number,
@@ -139,17 +174,6 @@ class Check {
   String name;
   CheckType type;
 
-  Map<String, dynamic> toJson() => {
-        "number": number,
-        "name": name,
-        "type": type.toString(),
-      };
-
-  Check.fromJson(Map<String, dynamic> json)
-      : number = json["number"],
-        name = json["name"],
-        type = json["type"];
-
   Check({
     required this.number,
     required this.name,
@@ -159,6 +183,29 @@ class Check {
 
 class DeafCheck extends Check {
   List<Question> questions = [];
+
+  Map<String, dynamic> toJson() => {
+        "number": number,
+        "name": name,
+        "type": type.toString(),
+        "questions": questions.map((question) => question.toJson()).toList(),
+      };
+
+  static DeafCheck? fromJson(Map<String, dynamic> json) {
+    return DeafCheck(
+      number: json["number"],
+      name: json["name"],
+      type: CheckType.fromString(json["type"])!,
+      questions: [
+        for (Map question in json["questions"])
+          Question(
+            number: question["number"],
+            penaltySeconds: question["penaltySeconds"],
+            correctAnswer: question["correctAnswer"],
+          ),
+      ],
+    );
+  }
 
   DeafCheck({
     required super.number,
@@ -171,10 +218,27 @@ class DeafCheck extends Check {
 class LiveCheck extends Check {
   int? penaltySeconds;
 
+  Map<String, dynamic> toJson() => {
+        "number": number,
+        "name": name,
+        "type": type.toString(),
+        "penaltySeconds": penaltySeconds,
+      };
+
+  static LiveCheck? fromJson(Map<String, dynamic> json) {
+    return LiveCheck(
+      number: json["number"],
+      name: json["name"],
+      type: CheckType.fromString(json["type"])!,
+      penaltySeconds: json["penaltySeconds"],
+    );
+  }
+
   LiveCheck({
     required super.number,
     required super.name,
     required super.type,
+    this.penaltySeconds,
   });
 }
 
@@ -183,6 +247,12 @@ class Question {
   int penaltySeconds;
   String correctAnswer;
   String? answer;
+
+  Map<String, dynamic> toJson() => {
+        "number": number,
+        "penaltySeconds": penaltySeconds,
+        "correctAnswer": correctAnswer,
+      };
 
   Question({
     required this.number,
@@ -220,13 +290,25 @@ class CompetitionCard {
   Map<String, dynamic> toJson() => {
         "team": team.toJson(),
         "waitSeconds": waitSeconds,
-        "checks": checks.map((check) => check.toJson()).toList(),
+        "checks": [
+          for (Check check in checks)
+            if (check is DeafCheck)
+              check.toJson()
+            else if (check is LiveCheck)
+              check.toJson()
+        ]
       };
 
   CompetitionCard.fromJson(Map<String, dynamic> json)
       : team = Team.fromJson(json["team"]),
         waitSeconds = json["waitSeconds"],
-        checks = json["checks"].map((check) => Check.fromJson(check)).toList();
+        checks = [
+          for (Map check in json["checks"])
+            if (check["type"] == "Hluchá")
+              DeafCheck.fromJson(check as Map<String, dynamic>)!
+            else
+              LiveCheck.fromJson(check as Map<String, dynamic>)!
+        ];
 
   CompetitionCard({
     required this.team,
