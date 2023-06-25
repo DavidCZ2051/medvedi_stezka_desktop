@@ -1,4 +1,6 @@
 // packages
+import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
 // routes
@@ -10,6 +12,10 @@ import 'package:medvedi_stezka/functions.dart';
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await WindowsSingleInstance.ensureSingleInstance(args, "medvedistezka");
+
+  if (kDebugMode) {
+    log(await getDataString());
+  }
 
   await loadData();
 

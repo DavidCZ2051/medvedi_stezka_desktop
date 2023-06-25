@@ -19,6 +19,7 @@ class _CompetitionsState extends State<Competitions> {
   void showDataDialog() async {
     String data = await getDataString();
 
+    if (!mounted) return;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

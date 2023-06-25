@@ -264,6 +264,8 @@ class Question {
 class CompetitionCard {
   Team team;
   int waitSeconds;
+  int startSeconds;
+  int endSeconds;
 
   List<Check> checks = [];
 
@@ -287,8 +289,26 @@ class CompetitionCard {
     return totalPenaltySeconds;
   }
 
+  int get totalTime {
+    int totalTime = 0;
+
+    for (Check check in checks) {
+      if (check is DeafCheck) {
+        totalTime += check.questions.length * 60;
+      } else if (check is LiveCheck) {
+        totalTime += 60;
+      }
+    }
+
+    totalTime += waitSeconds;
+
+    return totalTime;
+  }
+
   Map<String, dynamic> toJson() => {
         "team": team.toJson(),
+        "startSeconds": startSeconds,
+        "endSeconds": endSeconds,
         "waitSeconds": waitSeconds,
         "checks": [
           for (Check check in checks)
@@ -308,10 +328,14 @@ class CompetitionCard {
               DeafCheck.fromJson(check as Map<String, dynamic>)!
             else
               LiveCheck.fromJson(check as Map<String, dynamic>)!
-        ];
+        ],
+        startSeconds = json["startSeconds"],
+        endSeconds = json["endSeconds"];
 
   CompetitionCard({
     required this.team,
     required this.waitSeconds,
+    required this.startSeconds,
+    required this.endSeconds,
   });
 }

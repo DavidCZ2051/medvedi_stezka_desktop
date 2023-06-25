@@ -190,6 +190,10 @@ class _TeamsState extends State<Teams> {
                             ),
                             items: [
                               PopupMenuItem(
+                                onTap: () {
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {});
+                                },
                                 child: const Row(
                                   children: [
                                     Icon(
@@ -199,9 +203,9 @@ class _TeamsState extends State<Teams> {
                                     Text("Upravit"),
                                   ],
                                 ),
-                                onTap: () {},
                               ),
                               PopupMenuItem(
+                                onTap: () {},
                                 child: const Row(
                                   children: [
                                     Icon(
@@ -211,7 +215,6 @@ class _TeamsState extends State<Teams> {
                                     Text("Smazat"),
                                   ],
                                 ),
-                                onTap: () {},
                               ),
                             ],
                           );
