@@ -25,7 +25,7 @@ class _ResultsState extends State<Results> {
             DataRow(
               cells: [
                 DataCell(Text("Hlídka ${card.team.number.toString()}")),
-                DataCell(Text(formatTime(card.totalTime))),
+                DataCell(Text(formatTime(card.getTotalSeconds()))),
               ],
             ),
         ],

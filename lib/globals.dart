@@ -264,51 +264,40 @@ class Question {
 class CompetitionCard {
   Team team;
   int waitSeconds;
-  int startSeconds;
-  int endSeconds;
+  DateTime start;
+  DateTime end;
 
   List<Check> checks = [];
 
-  int get totalPenaltySeconds {
-    int totalPenaltySeconds = 0;
+  int getTotalSeconds() {
+    int totalSeconds = 0;
 
+    // start - end
+    totalSeconds += end.difference(start).inSeconds;
+
+    // checks
     for (Check check in checks) {
       if (check is DeafCheck) {
         for (Question question in check.questions) {
           if (question.answer != question.correctAnswer) {
-            totalPenaltySeconds += question.penaltySeconds;
+            totalSeconds += question.penaltySeconds;
           }
         }
       } else if (check is LiveCheck) {
-        totalPenaltySeconds += check.penaltySeconds!;
+        totalSeconds += check.penaltySeconds ?? 0;
       }
     }
 
-    totalPenaltySeconds -= waitSeconds;
+    // wait time
+    totalSeconds -= waitSeconds;
 
-    return totalPenaltySeconds;
-  }
-
-  int get totalTime {
-    int totalTime = 0;
-
-    for (Check check in checks) {
-      if (check is DeafCheck) {
-        totalTime += check.questions.length * 60;
-      } else if (check is LiveCheck) {
-        totalTime += 60;
-      }
-    }
-
-    totalTime += waitSeconds;
-
-    return totalTime;
+    return totalSeconds;
   }
 
   Map<String, dynamic> toJson() => {
         "team": team.toJson(),
-        "startSeconds": startSeconds,
-        "endSeconds": endSeconds,
+        "start": start,
+        "end": end,
         "waitSeconds": waitSeconds,
         "checks": [
           for (Check check in checks)
@@ -329,13 +318,13 @@ class CompetitionCard {
             else
               LiveCheck.fromJson(check as Map<String, dynamic>)!
         ],
-        startSeconds = json["startSeconds"],
-        endSeconds = json["endSeconds"];
+        start = json["start"],
+        end = json["ends"];
 
   CompetitionCard({
     required this.team,
     required this.waitSeconds,
-    required this.startSeconds,
-    required this.endSeconds,
+    required this.start,
+    required this.end,
   });
 }

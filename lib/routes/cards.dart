@@ -109,8 +109,8 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                   CompetitionCard(
                     team: newCompetitionCard["team"],
                     waitSeconds: 0, //newCompetitionCard["waitSeconds"],
-                    startSeconds: 0, //newCompetitionCard["startSeconds"],
-                    endSeconds: 0, //newCompetitionCard["finishSeconds"],
+                    start: DateTime.now(), //newCompetitionCard["startSeconds"],
+                    end: DateTime.now(), //newCompetitionCard["finishSeconds"],
                   ),
                 );
 
