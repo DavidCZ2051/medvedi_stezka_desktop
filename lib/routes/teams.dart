@@ -224,7 +224,7 @@ class _TeamsState extends State<Teams> {
                             "${team.number}",
                             style: const TextStyle(fontSize: 20),
                           ),
-                          title: Text("${team.category}"),
+                          title: Text("Kategorie ${team.category}"),
                         ),
                       ),
                     ),

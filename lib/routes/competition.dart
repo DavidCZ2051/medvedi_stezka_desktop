@@ -52,6 +52,20 @@ class _CompetitionState extends State<Competition> {
               });
             },
             selectedIndex: selectedIndex,
+            trailing: const Flexible(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      appVersion,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             destinations: const [
               NavigationRailDestination(
                 icon: Icon(Icons.home),

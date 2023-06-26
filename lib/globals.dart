@@ -112,7 +112,9 @@ class Competition {
         "type": type.toString(),
         "location": location,
         "year": year,
-        "teams": teams.map((team) => team.toJson()).toList(),
+        "teams": [
+          for (Team team in teams) team.toJson(),
+        ],
         "checks": [
           for (Check check in checks)
             if (check is DeafCheck)
@@ -120,7 +122,9 @@ class Competition {
             else if (check is LiveCheck)
               check.toJson()
         ],
-        "cards": cards.map((card) => card.toJson()).toList(),
+        "cards": [
+          for (CompetitionCard card in cards) card.toJson(),
+        ],
       };
 
   Competition.fromJson(Map<String, dynamic> json)
@@ -296,8 +300,8 @@ class CompetitionCard {
 
   Map<String, dynamic> toJson() => {
         "team": team.toJson(),
-        "start": start,
-        "end": end,
+        "start": start.toIso8601String(),
+        "end": end.toIso8601String(),
         "waitSeconds": waitSeconds,
         "checks": [
           for (Check check in checks)
@@ -318,8 +322,8 @@ class CompetitionCard {
             else
               LiveCheck.fromJson(check as Map<String, dynamic>)!
         ],
-        start = json["start"],
-        end = json["ends"];
+        start = DateTime.parse(json["start"]),
+        end = DateTime.parse(json["end"]);
 
   CompetitionCard({
     required this.team,

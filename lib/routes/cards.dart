@@ -140,7 +140,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
         onPressed: createCompetitionCardDialog,
         child: const Icon(Icons.add),
       ),
-      body: selectedCompetition!.teams.isEmpty
+      body: selectedCompetition!.cards.isEmpty
           ? const Center(
               child: Text(
                 "Zatím žádné karty...",
@@ -162,10 +162,53 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                   ),
                   for (CompetitionCard card in selectedCompetition!.cards)
                     Card(
-                      child: ListTile(
-                        leading: Text(
-                          "${card.team.number}",
-                          style: const TextStyle(fontSize: 20),
+                      child: InkWell(
+                        onSecondaryTapDown: (TapDownDetails tap) {
+                          // TODO
+                          showMenu(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              tap.globalPosition.dx,
+                              tap.globalPosition.dy,
+                              tap.globalPosition.dx,
+                              tap.globalPosition.dy,
+                            ),
+                            items: [
+                              PopupMenuItem(
+                                onTap: () {
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {});
+                                },
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.edit,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Upravit"),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                onTap: () {},
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Smazat"),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                        child: ListTile(
+                          leading: Text(
+                            "${card.team.number}",
+                            style: const TextStyle(fontSize: 20),
+                          ),
                         ),
                       ),
                     ),

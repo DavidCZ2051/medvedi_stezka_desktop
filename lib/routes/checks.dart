@@ -361,12 +361,55 @@ class _ChecksState extends State<Checks> {
                     (check) => check.type == CheckType.live,
                   ))
                     Card(
-                      child: ListTile(
-                        leading: Text(
-                          "${check.number}",
-                          style: const TextStyle(fontSize: 20),
+                      child: InkWell(
+                        onSecondaryTapDown: (TapDownDetails tap) {
+                          // TODO
+                          showMenu(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              tap.globalPosition.dx,
+                              tap.globalPosition.dy,
+                              tap.globalPosition.dx,
+                              tap.globalPosition.dy,
+                            ),
+                            items: [
+                              PopupMenuItem(
+                                onTap: () {
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {});
+                                },
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.edit,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Upravit"),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                onTap: () {},
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Smazat"),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                        child: ListTile(
+                          leading: Text(
+                            "${check.number}",
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                          title: Text(check.name),
                         ),
-                        title: Text(check.name),
                       ),
                     ),
                   const Divider(),
@@ -381,21 +424,64 @@ class _ChecksState extends State<Checks> {
                     (check) => check.type == CheckType.deaf,
                   ))
                     Card(
-                      child: ListTile(
-                        leading: Text(
-                          "${check.number}",
-                          style: const TextStyle(fontSize: 20),
-                        ),
-                        title: Text(
-                          check.name,
-                          style: const TextStyle(fontSize: 20),
-                        ),
-                        subtitle: Text(
-                          "${(check as DeafCheck).questions.length} otázek",
-                        ),
-                        onTap: () {
-                          viewDeafCheckDetails(check);
+                      child: InkWell(
+                        onSecondaryTapDown: (TapDownDetails tap) {
+                          // TODO
+                          showMenu(
+                            context: context,
+                            position: RelativeRect.fromLTRB(
+                              tap.globalPosition.dx,
+                              tap.globalPosition.dy,
+                              tap.globalPosition.dx,
+                              tap.globalPosition.dy,
+                            ),
+                            items: [
+                              PopupMenuItem(
+                                onTap: () {
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {});
+                                },
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.edit,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Upravit"),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                onTap: () {},
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Smazat"),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
                         },
+                        child: ListTile(
+                          leading: Text(
+                            "${check.number}",
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                          title: Text(
+                            check.name,
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                          subtitle: Text(
+                            "${(check as DeafCheck).questions.length} otázek",
+                          ),
+                          onTap: () {
+                            viewDeafCheckDetails(check);
+                          },
+                        ),
                       ),
                     ),
                 ],
