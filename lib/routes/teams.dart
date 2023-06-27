@@ -122,10 +122,14 @@ class _TeamsState extends State<Teams> {
               if (_newTeamFormKey.currentState!.validate()) {
                 _newTeamFormKey.currentState!.save();
 
+                // TODO: add organization, members
+
                 selectedCompetition!.teams.add(
                   Team(
                     number: newTeam["number"],
                     category: newTeam["category"],
+                    organization: "dodělat", // newTeam["organization"],
+                    members: [], // newTeam["members"],
                   ),
                 );
 

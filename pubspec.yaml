@@ -37,7 +37,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   windows_single_instance: ^0.1.6
   shared_preferences: ^2.1.2
-  duration_picker_dialog_box: ^1.0.1
 
 dev_dependencies:
   flutter_test:

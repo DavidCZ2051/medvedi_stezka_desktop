@@ -104,6 +104,7 @@ class Competition {
   String location;
   int year;
 
+  List<String> organizations = [];
   List<Team> teams = [];
   List<Check> checks = [];
   List<CompetitionCard> cards = [];
@@ -125,6 +126,7 @@ class Competition {
         "cards": [
           for (CompetitionCard card in cards) card.toJson(),
         ],
+        "organizations": organizations,
       };
 
   Competition.fromJson(Map<String, dynamic> json)
@@ -145,6 +147,9 @@ class Competition {
         cards = [
           for (Map card in json["cards"])
             CompetitionCard.fromJson(card as Map<String, dynamic>)
+        ],
+        organizations = [
+          for (String organization in json["organizations"]) organization
         ];
 
   Competition({
@@ -154,22 +159,59 @@ class Competition {
   });
 }
 
+class TeamMember {
+  String firstName;
+  String lastName;
+
+  int year;
+
+  Map<String, dynamic> toJson() => {
+        "firstName": firstName,
+        "lastName": lastName,
+        "year": year,
+      };
+
+  TeamMember.fromJson(Map<String, dynamic> json)
+      : firstName = json["firstName"],
+        lastName = json["lastName"],
+        year = json["year"];
+
+  TeamMember({
+    required this.firstName,
+    required this.lastName,
+    required this.year,
+  });
+}
+
 class Team {
   int number;
+  String organization;
   TeamCategory category;
+  List<TeamMember> members = [];
 
   Map<String, dynamic> toJson() => {
         "number": number,
+        "organization": organization,
         "category": category.toString(),
+        "members": [
+          for (TeamMember member in members) member.toJson(),
+        ]
       };
 
   Team.fromJson(Map<String, dynamic> json)
       : number = json["number"],
-        category = TeamCategory.fromString(json["category"])!;
+        organization = json["organization"],
+        category = TeamCategory.fromString(json["category"])!,
+        members = [
+          for (Map member in json["members"])
+            TeamMember.fromJson(member as Map<String, dynamic>)
+        ];
 
   Team({
     required this.number,
     required this.category,
+    required this.organization,
+    required this.members,
   });
 }
 
@@ -192,7 +234,9 @@ class DeafCheck extends Check {
         "number": number,
         "name": name,
         "type": type.toString(),
-        "questions": questions.map((question) => question.toJson()).toList(),
+        "questions": [
+          for (Question question in questions) question.toJson(),
+        ]
       };
 
   static DeafCheck? fromJson(Map<String, dynamic> json) {
