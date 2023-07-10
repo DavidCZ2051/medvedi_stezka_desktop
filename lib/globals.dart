@@ -6,39 +6,59 @@ Competition? selectedCompetition;
 
 enum TeamCategory {
   one,
-  two,
-  three,
-  four,
-  grownup;
+  twoFemale,
+  twoMale,
+  threeFemale,
+  threeMale,
+  fourFemale,
+  fourMale,
+  grownupFemale,
+  grownupMale;
 
   @override
   String toString() {
     switch (this) {
       case TeamCategory.one:
-        return "I.";
-      case TeamCategory.two:
-        return "II.";
-      case TeamCategory.three:
-        return "III.";
-      case TeamCategory.four:
-        return "IV.";
-      case TeamCategory.grownup:
-        return "Dorost";
+        return "Mladší I";
+      case TeamCategory.twoFemale:
+        return "Mladší žákyně II";
+      case TeamCategory.twoMale:
+        return "Mladší žáci II";
+      case TeamCategory.threeFemale:
+        return "Starší žákyně III";
+      case TeamCategory.threeMale:
+        return "Starší žáci III";
+      case TeamCategory.fourFemale:
+        return "Starší žákyně IV";
+      case TeamCategory.fourMale:
+        return "Starší žáci IV";
+      case TeamCategory.grownupFemale:
+        return "Dorostenky";
+      case TeamCategory.grownupMale:
+        return "Dorostenci";
     }
   }
 
   static TeamCategory? fromString(String string) {
     switch (string) {
-      case "I.":
+      case "Mladší I":
         return TeamCategory.one;
-      case "II.":
-        return TeamCategory.two;
-      case "III.":
-        return TeamCategory.three;
-      case "IV.":
-        return TeamCategory.four;
-      case "Dorost":
-        return TeamCategory.grownup;
+      case "Mladší žákyně II":
+        return TeamCategory.twoFemale;
+      case "Mladší žáci II":
+        return TeamCategory.twoMale;
+      case "Starší žákyně III":
+        return TeamCategory.threeFemale;
+      case "Starší žáci III":
+        return TeamCategory.threeMale;
+      case "Starší žákyně IV":
+        return TeamCategory.fourFemale;
+      case "Starší žáci IV":
+        return TeamCategory.fourMale;
+      case "Dorostenky":
+        return TeamCategory.grownupFemale;
+      case "Dorostenci":
+        return TeamCategory.grownupMale;
     }
     return null;
   }

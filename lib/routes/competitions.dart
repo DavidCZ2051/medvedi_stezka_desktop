@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:medvedi_stezka/functions.dart';
 // files
 import 'package:medvedi_stezka/globals.dart';
-import 'package:medvedi_stezka/widgets.dart';
 
 class Competitions extends StatefulWidget {
   const Competitions({super.key});
@@ -205,7 +204,7 @@ class _CompetitionsState extends State<Competitions> {
                 child: Column(
                   children: <Widget>[
                     for (Competition competition in competitions)
-                      /* Card(
+                      Card(
                         child: InkWell(
                           onSecondaryTapDown: (TapDownDetails details) {
                             showMenu(
@@ -248,8 +247,7 @@ class _CompetitionsState extends State<Competitions> {
                             },
                           ),
                         ),
-                      ), */
-                      MyTimePicker(),
+                      ),
                   ],
                 ),
               ),

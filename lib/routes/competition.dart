@@ -6,6 +6,7 @@ import 'package:medvedi_stezka/routes/teams.dart';
 import 'package:medvedi_stezka/routes/checks.dart';
 import 'package:medvedi_stezka/routes/cards.dart';
 import 'package:medvedi_stezka/routes/results.dart';
+import 'package:medvedi_stezka/routes/organizations.dart';
 
 class Competition extends StatefulWidget {
   const Competition({super.key});
@@ -72,6 +73,10 @@ class _CompetitionState extends State<Competition> {
                 label: Text("Soutěž"),
               ),
               NavigationRailDestination(
+                icon: Icon(Icons.business),
+                label: Text("Organizace"),
+              ),
+              NavigationRailDestination(
                 icon: Icon(Icons.people),
                 label: Text("Hlídky"),
               ),
@@ -95,6 +100,7 @@ class _CompetitionState extends State<Competition> {
               index: selectedIndex,
               children: const [
                 Placeholder(),
+                Organizations(),
                 Teams(),
                 Checks(),
                 Results(),

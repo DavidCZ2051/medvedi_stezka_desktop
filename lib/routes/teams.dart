@@ -37,76 +37,158 @@ class _TeamsState extends State<Teams> {
         content: Form(
           key: _newTeamFormKey,
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Kategorie",
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 400),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  DropdownButtonFormField(
+                    decoration: const InputDecoration(
+                      labelText: "Kategorie",
+                    ),
+                    value: newTeam["category"],
+                    items: [
+                      for (TeamCategory category in TeamCategory.values)
+                        DropdownMenuItem(
+                          value: category,
+                          child: Text("$category"),
+                        ),
+                    ],
+                    validator: (value) {
+                      if (value == null) {
+                        return "Vyberte kategorii hlídky";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        newTeam["category"] = value;
+                      });
+                    },
+                    onSaved: (value) {
+                      setState(() {
+                        newTeam["category"] = value;
+                      });
+                    },
                   ),
-                  value: newTeam["category"],
-                  items: [
-                    DropdownMenuItem(
-                      value: TeamCategory.one,
-                      child: Text("${TeamCategory.one}"),
+                  TextFormField(
+                    controller: _newTeamNumberTextEditingControler,
+                    decoration: const InputDecoration(
+                      labelText: "Číslo hlídky",
                     ),
-                    DropdownMenuItem(
-                      value: TeamCategory.two,
-                      child: Text("${TeamCategory.two}"),
-                    ),
-                    DropdownMenuItem(
-                      value: TeamCategory.three,
-                      child: Text("${TeamCategory.three}"),
-                    ),
-                    DropdownMenuItem(
-                      value: TeamCategory.four,
-                      child: Text("${TeamCategory.four}"),
-                    ),
-                    DropdownMenuItem(
-                      value: TeamCategory.grownup,
-                      child: Text("${TeamCategory.grownup}"),
-                    ),
-                  ],
-                  validator: (value) {
-                    if (value == null) {
-                      return "Vyberte kategorii hlídky";
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      newTeam["category"] = value;
-                    });
-                  },
-                  onSaved: (value) {
-                    setState(() {
-                      newTeam["category"] = value;
-                    });
-                  },
-                ),
-                TextFormField(
-                  controller: _newTeamNumberTextEditingControler,
-                  decoration: const InputDecoration(
-                    labelText: "Číslo hlídky",
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Zadejte číslo hlídky";
+                      } else if (int.tryParse(value) == null) {
+                        return "Zadejte platné číslo";
+                      } else if (isTeamNumberOccupied(int.parse(value))) {
+                        return "Toto číslo je již obsazené";
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      setState(() {
+                        newTeam["number"] = int.parse(value!);
+                      });
+                    },
                   ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Zadejte číslo hlídky";
-                    } else if (int.tryParse(value) == null) {
-                      return "Zadejte platné číslo";
-                    } else if (isTeamNumberOccupied(int.parse(value))) {
-                      return "Toto číslo je již obsazené";
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    setState(() {
-                      newTeam["number"] = int.parse(value!);
-                    });
-                  },
-                ),
-              ],
+                  DropdownButtonFormField(
+                    decoration: const InputDecoration(
+                      labelText: "Organizace",
+                    ),
+                    value: newTeam["organization"],
+                    items: [
+                      for (String organization
+                          in selectedCompetition!.organizations)
+                        DropdownMenuItem(
+                          value: organization,
+                          child: Text(organization),
+                        ),
+                    ],
+                    validator: (value) {
+                      if (value == null) {
+                        return "Vyberte organizaci hlídky";
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        newTeam["organization"] = value;
+                      });
+                    },
+                    onSaved: (value) {
+                      setState(() {
+                        newTeam["organization"] = value;
+                      });
+                    },
+                  ),
+                  for (int i = 0; i < 2; i++)
+                    Row(
+                      children: [
+                        Flexible(
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: "Jméno",
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Zadejte jméno";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                newTeam["firstName$i"] = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: "Příjmení",
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Zadejte příjmení";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                newTeam["lastName$i"] = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: "Rok narození",
+                            ),
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Zadejte rok narození";
+                              } else if (int.tryParse(value) == null) {
+                                return "Zadejte platné číslo";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                newTeam["year$i"] = int.parse(value!);
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -122,14 +204,23 @@ class _TeamsState extends State<Teams> {
               if (_newTeamFormKey.currentState!.validate()) {
                 _newTeamFormKey.currentState!.save();
 
-                // TODO: add organization, members
-
                 selectedCompetition!.teams.add(
                   Team(
                     number: newTeam["number"],
                     category: newTeam["category"],
-                    organization: "dodělat", // newTeam["organization"],
-                    members: [], // newTeam["members"],
+                    organization: newTeam["organization"],
+                    members: [
+                      TeamMember(
+                        firstName: newTeam["firstName0"],
+                        lastName: newTeam["lastName0"],
+                        year: newTeam["year0"],
+                      ),
+                      TeamMember(
+                        firstName: newTeam["firstName1"],
+                        lastName: newTeam["lastName1"],
+                        year: newTeam["year1"],
+                      ),
+                    ],
                   ),
                 );
 
@@ -228,7 +319,11 @@ class _TeamsState extends State<Teams> {
                             "${team.number}",
                             style: const TextStyle(fontSize: 20),
                           ),
-                          title: Text("Kategorie ${team.category}"),
+                          title: Text("${team.category}"),
+                          subtitle: Text(
+                            "${team.organization}: ${team.members[0].firstName} ${team.members[0].lastName}, ${team.members[1].firstName} ${team.members[1].lastName}",
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ),
                       ),
                     ),
