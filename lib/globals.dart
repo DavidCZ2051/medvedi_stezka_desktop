@@ -1,6 +1,38 @@
 const String appVersion = "1.0.0-DEV";
 
-List<Competition> competitions = [];
+// TODO: test data
+List<Competition> competitions = [
+  Competition(
+    type: CompetitionType.region,
+    location: "TEST",
+    year: 2023,
+    cards: [
+      CompetitionCard(
+        team: Team(
+          category: TeamCategory.grownupMale,
+          members: [
+            TeamMember(
+              firstName: "David",
+              lastName: "Vobruba",
+              birthYear: 2005,
+            ),
+            TeamMember(
+              firstName: "Pavel",
+              lastName: "Merta",
+              birthYear: 2005,
+            ),
+          ],
+          number: 19,
+          organization: "Rochlice",
+        ),
+        start: DateTime.now().subtract(
+          const Duration(minutes: 46, seconds: 17),
+        ),
+        finish: DateTime.now(),
+      ),
+    ],
+  ),
+];
 
 Competition? selectedCompetition;
 
@@ -172,34 +204,40 @@ class Competition {
           for (String organization in json["organizations"]) organization
         ];
 
+  int getPlace(CompetitionCard card) {
+    int position = 0;
+    return position;
+  }
+
   Competition({
     required this.type,
     required this.location,
     required this.year,
+    // TODO: test data
+    this.cards = const [],
   });
 }
 
 class TeamMember {
   String firstName;
   String lastName;
-
-  int year;
+  int birthYear;
 
   Map<String, dynamic> toJson() => {
         "firstName": firstName,
         "lastName": lastName,
-        "year": year,
+        "birthYear": birthYear,
       };
 
   TeamMember.fromJson(Map<String, dynamic> json)
       : firstName = json["firstName"],
         lastName = json["lastName"],
-        year = json["year"];
+        birthYear = json["birthYear"];
 
   TeamMember({
     required this.firstName,
     required this.lastName,
-    required this.year,
+    required this.birthYear,
   });
 }
 
@@ -285,12 +323,14 @@ class DeafCheck extends Check {
 
 class LiveCheck extends Check {
   int? penaltySeconds;
+  int? waitSeconds;
 
   Map<String, dynamic> toJson() => {
         "number": number,
         "name": name,
         "type": type.toString(),
         "penaltySeconds": penaltySeconds,
+        "waitSeconds": waitSeconds,
       };
 
   static LiveCheck? fromJson(Map<String, dynamic> json) {
@@ -299,6 +339,7 @@ class LiveCheck extends Check {
       name: json["name"],
       type: CheckType.fromString(json["type"])!,
       penaltySeconds: json["penaltySeconds"],
+      waitSeconds: json["waitSeconds"],
     );
   }
 
@@ -307,6 +348,7 @@ class LiveCheck extends Check {
     required super.name,
     required super.type,
     this.penaltySeconds,
+    this.waitSeconds,
   });
 }
 
@@ -331,42 +373,15 @@ class Question {
 
 class CompetitionCard {
   Team team;
-  int waitSeconds;
   DateTime start;
-  DateTime end;
+  DateTime finish;
 
   List<Check> checks = [];
-
-  int getTotalSeconds() {
-    int totalSeconds = 0;
-
-    // start - end
-    totalSeconds += end.difference(start).inSeconds;
-
-    // checks
-    for (Check check in checks) {
-      if (check is DeafCheck) {
-        for (Question question in check.questions) {
-          if (question.answer != question.correctAnswer) {
-            totalSeconds += question.penaltySeconds;
-          }
-        }
-      } else if (check is LiveCheck) {
-        totalSeconds += check.penaltySeconds ?? 0;
-      }
-    }
-
-    // wait time
-    totalSeconds -= waitSeconds;
-
-    return totalSeconds;
-  }
 
   Map<String, dynamic> toJson() => {
         "team": team.toJson(),
         "start": start.toIso8601String(),
-        "end": end.toIso8601String(),
-        "waitSeconds": waitSeconds,
+        "finish": finish.toIso8601String(),
         "checks": [
           for (Check check in checks)
             if (check is DeafCheck)
@@ -378,7 +393,6 @@ class CompetitionCard {
 
   CompetitionCard.fromJson(Map<String, dynamic> json)
       : team = Team.fromJson(json["team"]),
-        waitSeconds = json["waitSeconds"],
         checks = [
           for (Map check in json["checks"])
             if (check["type"] == "Hluchá")
@@ -387,12 +401,45 @@ class CompetitionCard {
               LiveCheck.fromJson(check as Map<String, dynamic>)!
         ],
         start = DateTime.parse(json["start"]),
-        end = DateTime.parse(json["end"]);
+        finish = DateTime.parse(json["finish"]);
+
+  int getTotalWaitSeconds() {
+    int totalWaitSeconds = 0;
+    for (Check check in checks) {
+      if (check is LiveCheck) {
+        totalWaitSeconds += check.waitSeconds ?? 0;
+      }
+    }
+    return totalWaitSeconds;
+  }
+
+  int getTotalPenaltySeconds() {
+    int totalPenaltySeconds = 0;
+    for (Check check in checks) {
+      if (check is DeafCheck) {
+        for (Question question in check.questions) {
+          if (question.answer != question.correctAnswer) {
+            totalPenaltySeconds += question.penaltySeconds;
+          }
+        }
+      } else if (check is LiveCheck) {
+        totalPenaltySeconds += check.penaltySeconds ?? 0;
+      }
+    }
+    return totalPenaltySeconds;
+  }
+
+  int getTotalSeconds() {
+    int totalSeconds = 0;
+    totalSeconds += finish.difference(start).inSeconds;
+    totalSeconds += getTotalPenaltySeconds();
+    totalSeconds -= getTotalWaitSeconds();
+    return totalSeconds;
+  }
 
   CompetitionCard({
     required this.team,
-    required this.waitSeconds,
     required this.start,
-    required this.end,
+    required this.finish,
   });
 }

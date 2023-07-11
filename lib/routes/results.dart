@@ -14,21 +14,109 @@ class _ResultsState extends State<Results> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: DataTable(
-        sortColumnIndex: 1,
-        columns: const [
-          DataColumn(label: Text("Číslo hlídky")),
-          DataColumn(label: Text("Celkový čas")),
-        ],
-        rows: [
-          for (CompetitionCard card in selectedCompetition!.cards)
-            DataRow(
-              cells: [
-                DataCell(Text("Hlídka ${card.team.number.toString()}")),
-                DataCell(Text(formatTime(card.getTotalSeconds()))),
-              ],
+      body: Padding(
+        // TODO: make scrollable both ways
+        padding: const EdgeInsets.all(8.0),
+        child: DataTable(
+          border: TableBorder.all(
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
+          ),
+          sortColumnIndex: 1,
+          columns: const [
+            DataColumn(
+              label: Text("Umístění hlídky"),
             ),
-        ],
+            DataColumn(
+              label: Text("Číslo hlídky"),
+            ),
+            DataColumn(
+              label: Text("Příjmení a jméno"),
+            ),
+            DataColumn(
+              label: Text("Rok narození"),
+            ),
+            DataColumn(
+              label: Text("Organizace"),
+            ),
+            DataColumn(
+              label: Text("Start"),
+              tooltip: "H:MM:SS",
+            ),
+            DataColumn(
+              label: Text("Cíl"),
+              tooltip: "H:MM:SS",
+            ),
+            DataColumn(
+              label: Text("Čas běhu"),
+              tooltip: "H:MM:SS",
+            ),
+            DataColumn(
+              label: Text("Trestné minuty celkem"),
+              tooltip: "H:MM:SS",
+            ),
+            DataColumn(
+              label: Text("Čekací doba celkem"),
+              tooltip: "H:MM:SS",
+            ),
+            DataColumn(
+              label: Text("Výsledný čas"),
+              tooltip: "H:MM:SS",
+            ),
+          ],
+          rows: [
+            for (CompetitionCard card in selectedCompetition!.cards)
+              DataRow(
+                cells: [
+                  DataCell(
+                    Text("${selectedCompetition!.getPlace(card)}"),
+                  ),
+                  DataCell(
+                    Text("${card.team.number}"),
+                  ),
+                  DataCell(
+                    Text(
+                      "${card.team.members[0].firstName} ${card.team.members[0].lastName}\n${card.team.members[1].firstName} ${card.team.members[1].lastName}",
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                        "${card.team.members[0].birthYear}\n${card.team.members[1].birthYear}"),
+                  ),
+                  DataCell(
+                    Text(card.team.organization),
+                  ),
+                  DataCell(
+                    Text(formatDateTime(card.start)),
+                  ),
+                  DataCell(
+                    Text(formatDateTime(card.finish)),
+                  ),
+                  DataCell(
+                    Text(
+                      formatDuration(card.finish.difference(card.start)),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      formatTime(card.getTotalPenaltySeconds()),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      formatTime(card.getTotalWaitSeconds()),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      formatTime(card.getTotalSeconds()),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }

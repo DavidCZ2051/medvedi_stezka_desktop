@@ -66,28 +66,6 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                       });
                     },
                   ),
-                  /* TextFormField(
-                    controller: _newTeamNumberTextEditingControler,
-                    decoration: const InputDecoration(
-                      labelText: "Číslo hlídky",
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Zadejte číslo hlídky";
-                      } else if (int.tryParse(value) == null) {
-                        return "Zadejte platné číslo";
-                      } else if (isTeamNumberOccupied(int.parse(value))) {
-                        return "Toto číslo je již obsazené";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      setState(() {
-                        newTeam["number"] = int.parse(value!);
-                      });
-                    },
-                  ), */
                 ],
               ),
             ),
@@ -108,9 +86,9 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                 selectedCompetition!.cards.add(
                   CompetitionCard(
                     team: newCompetitionCard["team"],
-                    waitSeconds: 0, //newCompetitionCard["waitSeconds"],
                     start: DateTime.now(), //newCompetitionCard["startSeconds"],
-                    end: DateTime.now(), //newCompetitionCard["finishSeconds"],
+                    finish:
+                        DateTime.now(), //newCompetitionCard["finishSeconds"],
                   ),
                 );
 

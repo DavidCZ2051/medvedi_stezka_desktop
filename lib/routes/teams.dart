@@ -180,7 +180,7 @@ class _TeamsState extends State<Teams> {
                             },
                             onSaved: (value) {
                               setState(() {
-                                newTeam["year$i"] = int.parse(value!);
+                                newTeam["birthYear$i"] = int.parse(value!);
                               });
                             },
                           ),
@@ -213,12 +213,12 @@ class _TeamsState extends State<Teams> {
                       TeamMember(
                         firstName: newTeam["firstName0"],
                         lastName: newTeam["lastName0"],
-                        year: newTeam["year0"],
+                        birthYear: newTeam["birthYear0"],
                       ),
                       TeamMember(
                         firstName: newTeam["firstName1"],
                         lastName: newTeam["lastName1"],
-                        year: newTeam["year1"],
+                        birthYear: newTeam["birthYear1"],
                       ),
                     ],
                   ),
