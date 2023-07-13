@@ -14,6 +14,7 @@ void main(List<String> args) async {
   await WindowsSingleInstance.ensureSingleInstance(args, "medvedistezka");
 
   if (kDebugMode) {
+    log("App args: $args");
     log(await getDataString());
   }
 
@@ -40,12 +41,7 @@ class _AppState extends State<App> {
         "/competition": (context) => const Competition(),
       },
       title: "Medvědí stezka",
-      themeMode: ThemeMode.system,
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        colorSchemeSeed: Colors.green,
-        useMaterial3: true,
-      ),
+      themeMode: ThemeMode.light,
       theme: ThemeData(
         brightness: Brightness.light,
         colorSchemeSeed: Colors.green,

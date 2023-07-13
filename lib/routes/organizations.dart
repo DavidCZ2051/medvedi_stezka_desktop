@@ -99,7 +99,7 @@ class _OrganizationsState extends State<Organizations> {
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -128,7 +128,7 @@ class _OrganizationsState extends State<Organizations> {
                                       .addPostFrameCallback((_) {});
                                 },
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.edit,
                                     ),
@@ -140,7 +140,7 @@ class _OrganizationsState extends State<Organizations> {
                               PopupMenuItem(
                                 onTap: () {},
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.delete,
                                     ),

@@ -1,5 +1,6 @@
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // files
 import 'package:medvedi_stezka/globals.dart';
 import 'package:medvedi_stezka/functions.dart';
@@ -16,9 +17,18 @@ class _ChecksState extends State<Checks> {
 
   Map<String, dynamic> newCheck = {};
 
-  bool isCheckNumberOccupied(int number) {
+  bool isCheckNumberOccupied(
+    int number,
+    CheckType type,
+    DeafCheckCategory? category,
+  ) {
     for (Check check in selectedCompetition!.checks) {
-      if (check.number == number) {
+      if (check.number == number && check.type == type && category == null) {
+        return true;
+      } else if (check.number == number &&
+          check.type == type &&
+          category != null &&
+          (check as DeafCheck).category == category) {
         return true;
       }
     }
@@ -33,7 +43,7 @@ class _ChecksState extends State<Checks> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("${check.number}. ${check.name}"),
+        title: Text("H${check.number} ${check.name}"),
         content: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 325),
@@ -48,7 +58,7 @@ class _ChecksState extends State<Checks> {
                 for (Question question in check.questions)
                   ListTile(
                     title: Row(
-                      children: [
+                      children: <Widget>[
                         Text(
                           "Otázka ${question.number}",
                           style: const TextStyle(fontSize: 20),
@@ -123,11 +133,17 @@ class _ChecksState extends State<Checks> {
                       onChanged: (value) {
                         setState(() {
                           newCheck["type"] = value;
+                          if (value == CheckType.live) {
+                            newCheck["category"] = null;
+                          }
                         });
                       },
                       onSaved: (value) {
                         setState(() {
                           newCheck["type"] = value;
+                          if (value == CheckType.live) {
+                            newCheck["category"] = null;
+                          }
                         });
                       },
                     ),
@@ -157,7 +173,11 @@ class _ChecksState extends State<Checks> {
                           return "Zadejte číslo kontroly";
                         } else if (int.tryParse(value) == null) {
                           return "Zadejte platné číslo";
-                        } else if (isCheckNumberOccupied(int.parse(value))) {
+                        } else if (isCheckNumberOccupied(
+                          int.parse(value),
+                          newCheck["type"],
+                          newCheck["category"],
+                        )) {
                           return "Toto číslo je již obsazené";
                         }
                         return null;
@@ -170,8 +190,43 @@ class _ChecksState extends State<Checks> {
                     ),
                     if (newCheck["type"] == CheckType.deaf)
                       Column(
-                        children: [
+                        children: <Widget>[
                           const Divider(),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: DropdownButtonFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Kategorie kontroly",
+                              ),
+                              value: newCheck["category"],
+                              items: [
+                                DropdownMenuItem(
+                                  value: DeafCheckCategory.young,
+                                  child: Text("${DeafCheckCategory.young}"),
+                                ),
+                                DropdownMenuItem(
+                                  value: DeafCheckCategory.old,
+                                  child: Text("${DeafCheckCategory.old}"),
+                                ),
+                              ],
+                              validator: (value) {
+                                if (value == null) {
+                                  return "Vyberte kategorii kontroly";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                setState(() {
+                                  newCheck["category"] = value;
+                                });
+                              },
+                              onSaved: (value) {
+                                setState(() {
+                                  newCheck["category"] = value;
+                                });
+                              },
+                            ),
+                          ),
                           OutlinedButton(
                             onPressed: () async {
                               TimeOfDay? time = await showTimePicker(
@@ -225,7 +280,7 @@ class _ChecksState extends State<Checks> {
                           const SizedBox(height: 12),
                           if (newCheck["questionCount"].runtimeType == int)
                             Column(
-                              children: [
+                              children: <Widget>[
                                 for (int i = 1;
                                     i <= newCheck["questionCount"];
                                     i++)
@@ -236,6 +291,10 @@ class _ChecksState extends State<Checks> {
                                         maxWidth: 160,
                                       ),
                                       child: TextFormField(
+                                        inputFormatters: [
+                                          LengthLimitingTextInputFormatter(1),
+                                          UpperCaseTextFormatter(),
+                                        ],
                                         decoration: const InputDecoration(
                                           hintText: "Správná odpověď",
                                         ),
@@ -244,6 +303,11 @@ class _ChecksState extends State<Checks> {
                                             return "Zadejte správnou odpověď";
                                           }
                                           return null;
+                                        },
+                                        onChanged: (value) {
+                                          if (value.isNotEmpty) {
+                                            FocusScope.of(context).nextFocus();
+                                          }
                                         },
                                         onSaved: (value) {
                                           setState(() {
@@ -283,6 +347,7 @@ class _ChecksState extends State<Checks> {
                     newCheck["type"] == CheckType.deaf
                         ? DeafCheck(
                             number: newCheck["number"],
+                            category: newCheck["category"],
                             name: newCheck["name"],
                             type: CheckType.deaf,
                             questions: [
@@ -341,7 +406,7 @@ class _ChecksState extends State<Checks> {
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -350,13 +415,6 @@ class _ChecksState extends State<Checks> {
                     ),
                   ),
                   const Divider(),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      "Živé kontroly:",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                  ),
                   for (Check check in selectedCompetition!.checks.where(
                     (check) => check.type == CheckType.live,
                   ))
@@ -379,7 +437,7 @@ class _ChecksState extends State<Checks> {
                                       .addPostFrameCallback((_) {});
                                 },
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.edit,
                                     ),
@@ -391,7 +449,7 @@ class _ChecksState extends State<Checks> {
                               PopupMenuItem(
                                 onTap: () {},
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.delete,
                                     ),
@@ -405,7 +463,7 @@ class _ChecksState extends State<Checks> {
                         },
                         child: ListTile(
                           leading: Text(
-                            "${check.number}",
+                            "Ž${check.number}",
                             style: const TextStyle(fontSize: 20),
                           ),
                           title: Text(check.name),
@@ -413,13 +471,6 @@ class _ChecksState extends State<Checks> {
                       ),
                     ),
                   const Divider(),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      "Hluché kontroly:",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                  ),
                   for (Check check in selectedCompetition!.checks.where(
                     (check) => check.type == CheckType.deaf,
                   ))
@@ -442,7 +493,7 @@ class _ChecksState extends State<Checks> {
                                       .addPostFrameCallback((_) {});
                                 },
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.edit,
                                     ),
@@ -454,7 +505,7 @@ class _ChecksState extends State<Checks> {
                               PopupMenuItem(
                                 onTap: () {},
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.delete,
                                     ),
@@ -468,7 +519,7 @@ class _ChecksState extends State<Checks> {
                         },
                         child: ListTile(
                           leading: Text(
-                            "${check.number}",
+                            "H${check.number} (${(check as DeafCheck).category})",
                             style: const TextStyle(fontSize: 20),
                           ),
                           title: Text(
@@ -476,7 +527,7 @@ class _ChecksState extends State<Checks> {
                             style: const TextStyle(fontSize: 20),
                           ),
                           subtitle: Text(
-                            "${(check as DeafCheck).questions.length} otázek",
+                            "${check.questions.length} otázek",
                           ),
                           onTap: () {
                             viewDeafCheckDetails(check);
@@ -487,6 +538,17 @@ class _ChecksState extends State<Checks> {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
     );
   }
 }

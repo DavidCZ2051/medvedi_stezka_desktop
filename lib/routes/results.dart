@@ -19,9 +19,7 @@ class _ResultsState extends State<Results> {
         padding: const EdgeInsets.all(8.0),
         child: DataTable(
           border: TableBorder.all(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+            color: Colors.black,
           ),
           sortColumnIndex: 1,
           columns: const [

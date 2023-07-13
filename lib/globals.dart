@@ -4,10 +4,330 @@ const String appVersion = "1.0.0-DEV";
 List<Competition> competitions = [
   Competition(
     type: CompetitionType.region,
-    location: "TEST",
+    location: "TEST TEST TEST TEST TEST TEST",
     year: 2023,
+    checks: [
+      LiveCheck(
+        number: 1,
+        name: "Lana",
+        type: CheckType.live,
+      ),
+      LiveCheck(
+        number: 2,
+        name: "Odhad",
+        type: CheckType.live,
+      ),
+      LiveCheck(
+        number: 3,
+        name: "Síla",
+        type: CheckType.live,
+      ),
+      LiveCheck(
+        number: 4,
+        name: "Uzle",
+        type: CheckType.live,
+      ),
+      LiveCheck(
+        number: 5,
+        name: "Zdravověda",
+        type: CheckType.live,
+      ),
+      LiveCheck(
+        number: 6,
+        name: "Hod na cíl",
+        type: CheckType.live,
+      ),
+      DeafCheck(
+        category: DeafCheckCategory.old,
+        number: 1,
+        name: "Všeobecné znalosti",
+        type: CheckType.deaf,
+        questions: [
+          Question(
+            number: 1,
+            penaltySeconds: 30,
+            correctAnswer: "C",
+          ),
+          Question(
+            number: 2,
+            penaltySeconds: 30,
+            correctAnswer: "C",
+          ),
+          Question(
+            number: 3,
+            penaltySeconds: 30,
+            correctAnswer: "A",
+          ),
+          Question(
+            number: 4,
+            penaltySeconds: 30,
+            correctAnswer: "C",
+          ),
+          Question(
+            number: 5,
+            penaltySeconds: 30,
+            correctAnswer: "A",
+          ),
+          Question(
+            number: 6,
+            penaltySeconds: 30,
+            correctAnswer: "A",
+          ),
+          Question(
+            number: 7,
+            penaltySeconds: 30,
+            correctAnswer: "C",
+          ),
+          Question(
+            number: 8,
+            penaltySeconds: 30,
+            correctAnswer: "A",
+          ),
+          Question(
+            number: 9,
+            penaltySeconds: 30,
+            correctAnswer: "A",
+          ),
+          Question(
+            number: 10,
+            penaltySeconds: 30,
+            correctAnswer: "C",
+          ),
+        ],
+      ),
+      DeafCheck(
+        category: DeafCheckCategory.old,
+        number: 2,
+        name: "Stavby",
+        type: CheckType.deaf,
+        questions: [
+          Question(
+            number: 1,
+            penaltySeconds: 30,
+            correctAnswer: "B",
+          ),
+          Question(
+            number: 2,
+            penaltySeconds: 30,
+            correctAnswer: "A",
+          ),
+          Question(
+            number: 3,
+            penaltySeconds: 30,
+            correctAnswer: "B",
+          ),
+          Question(
+            number: 4,
+            penaltySeconds: 30,
+            correctAnswer: "C",
+          ),
+          Question(
+            number: 5,
+            penaltySeconds: 30,
+            correctAnswer: "A",
+          ),
+          Question(
+            number: 6,
+            penaltySeconds: 30,
+            correctAnswer: "A",
+          ),
+          Question(
+            number: 7,
+            penaltySeconds: 30,
+            correctAnswer: "C",
+          ),
+          Question(
+            number: 8,
+            penaltySeconds: 30,
+            correctAnswer: "B",
+          ),
+          Question(
+            number: 9,
+            penaltySeconds: 30,
+            correctAnswer: "B",
+          ),
+          Question(
+            number: 10,
+            penaltySeconds: 30,
+            correctAnswer: "B",
+          ),
+        ],
+      ),
+    ],
     cards: [
       CompetitionCard(
+        checks: [
+          LiveCheck(
+            number: 1,
+            name: "Lana",
+            type: CheckType.live,
+            waitSeconds: 15,
+          ),
+          LiveCheck(
+            number: 2,
+            name: "Odhad",
+            type: CheckType.live,
+          ),
+          LiveCheck(
+            number: 3,
+            name: "Síla",
+            type: CheckType.live,
+          ),
+          LiveCheck(
+            number: 4,
+            name: "Uzle",
+            type: CheckType.live,
+            waitSeconds: 370,
+          ),
+          LiveCheck(
+            number: 5,
+            name: "Zdravověda",
+            type: CheckType.live,
+          ),
+          LiveCheck(
+            number: 6,
+            name: "Hod na cíl",
+            type: CheckType.live,
+            penaltySeconds: 120,
+            waitSeconds: 60,
+          ),
+          DeafCheck(
+            number: 1,
+            category: DeafCheckCategory.old,
+            name: "Všeobecné znalosti",
+            type: CheckType.deaf,
+            questions: [
+              Question(
+                number: 1,
+                penaltySeconds: 30,
+                answer: "B",
+                correctAnswer: "C",
+              ),
+              Question(
+                number: 2,
+                penaltySeconds: 30,
+                answer: "C",
+                correctAnswer: "C",
+              ),
+              Question(
+                number: 3,
+                penaltySeconds: 30,
+                answer: "A",
+                correctAnswer: "A",
+              ),
+              Question(
+                number: 4,
+                penaltySeconds: 30,
+                answer: "C",
+                correctAnswer: "C",
+              ),
+              Question(
+                number: 5,
+                penaltySeconds: 30,
+                answer: "A",
+                correctAnswer: "A",
+              ),
+              Question(
+                number: 6,
+                penaltySeconds: 30,
+                answer: "A",
+                correctAnswer: "A",
+              ),
+              Question(
+                number: 7,
+                penaltySeconds: 30,
+                answer: "C",
+                correctAnswer: "C",
+              ),
+              Question(
+                number: 8,
+                penaltySeconds: 30,
+                answer: "A",
+                correctAnswer: "A",
+              ),
+              Question(
+                number: 9,
+                penaltySeconds: 30,
+                answer: "A",
+                correctAnswer: "A",
+              ),
+              Question(
+                number: 10,
+                penaltySeconds: 30,
+                answer: "C",
+                correctAnswer: "C",
+              ),
+            ],
+          ),
+          DeafCheck(
+            number: 2,
+            category: DeafCheckCategory.old,
+            name: "Stavby",
+            type: CheckType.deaf,
+            questions: [
+              Question(
+                number: 1,
+                penaltySeconds: 30,
+                answer: "B",
+                correctAnswer: "B",
+              ),
+              Question(
+                number: 2,
+                penaltySeconds: 30,
+                answer: "B",
+                correctAnswer: "A",
+              ),
+              Question(
+                number: 3,
+                penaltySeconds: 30,
+                answer: "B",
+                correctAnswer: "B",
+              ),
+              Question(
+                number: 4,
+                penaltySeconds: 30,
+                answer: "C",
+                correctAnswer: "C",
+              ),
+              Question(
+                number: 5,
+                penaltySeconds: 30,
+                answer: "A",
+                correctAnswer: "A",
+              ),
+              Question(
+                number: 6,
+                penaltySeconds: 30,
+                answer: "A",
+                correctAnswer: "A",
+              ),
+              Question(
+                number: 7,
+                penaltySeconds: 30,
+                answer: "C",
+                correctAnswer: "C",
+              ),
+              Question(
+                number: 8,
+                penaltySeconds: 30,
+                answer: "B",
+                correctAnswer: "B",
+              ),
+              Question(
+                number: 9,
+                penaltySeconds: 30,
+                answer: "B",
+                correctAnswer: "B",
+              ),
+              Question(
+                number: 10,
+                penaltySeconds: 30,
+                answer: "B",
+                correctAnswer: "B",
+              ),
+            ],
+          ),
+        ],
         team: Team(
           category: TeamCategory.grownupMale,
           members: [
@@ -22,11 +342,11 @@ List<Competition> competitions = [
               birthYear: 2005,
             ),
           ],
-          number: 19,
+          number: 15,
           organization: "Rochlice",
         ),
         start: DateTime.now().subtract(
-          const Duration(minutes: 46, seconds: 17),
+          const Duration(minutes: 50),
         ),
         finish: DateTime.now(),
       ),
@@ -35,6 +355,31 @@ List<Competition> competitions = [
 ];
 
 Competition? selectedCompetition;
+
+enum DeafCheckCategory {
+  young, // 1-2
+  old; // 3-5
+
+  @override
+  String toString() {
+    switch (this) {
+      case DeafCheckCategory.young:
+        return "Mladší";
+      case DeafCheckCategory.old:
+        return "Starší";
+    }
+  }
+
+  static DeafCheckCategory? fromString(String string) {
+    switch (string) {
+      case "Mladší":
+        return DeafCheckCategory.young;
+      case "Starší":
+        return DeafCheckCategory.old;
+    }
+    return null;
+  }
+}
 
 enum TeamCategory {
   one,
@@ -215,6 +560,7 @@ class Competition {
     required this.year,
     // TODO: test data
     this.cards = const [],
+    this.checks = const [],
   });
 }
 
@@ -287,10 +633,12 @@ class Check {
 
 class DeafCheck extends Check {
   List<Question> questions = [];
+  DeafCheckCategory category;
 
   Map<String, dynamic> toJson() => {
         "number": number,
         "name": name,
+        "category": category.toString(),
         "type": type.toString(),
         "questions": [
           for (Question question in questions) question.toJson(),
@@ -301,6 +649,7 @@ class DeafCheck extends Check {
     return DeafCheck(
       number: json["number"],
       name: json["name"],
+      category: DeafCheckCategory.fromString(json["category"])!,
       type: CheckType.fromString(json["type"])!,
       questions: [
         for (Map question in json["questions"])
@@ -317,6 +666,7 @@ class DeafCheck extends Check {
     required super.number,
     required super.name,
     required super.type,
+    required this.category,
     required this.questions,
   });
 }
@@ -367,7 +717,9 @@ class Question {
   Question({
     required this.number,
     required this.penaltySeconds,
-    required this.correctAnswer,
+    // TODO: test data
+    /* required  */ this.correctAnswer = "",
+    this.answer,
   });
 }
 
@@ -441,5 +793,7 @@ class CompetitionCard {
     required this.team,
     required this.start,
     required this.finish,
+    // TODO: test data
+    this.checks = const [],
   });
 }

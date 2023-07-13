@@ -28,23 +28,19 @@ class _CompetitionState extends State<Competition> {
             selectedCompetition = null;
             Navigator.pop(context);
           },
-          color: Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black,
+          color: Colors.white,
           icon: const Icon(Icons.arrow_back),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           "${selectedCompetition!.type} ${selectedCompetition!.location} ${selectedCompetition!.year}",
-          style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
+          style: const TextStyle(
+            color: Colors.white,
           ),
         ),
       ),
       body: Row(
-        children: [
+        children: <Widget>[
           NavigationRail(
             labelType: NavigationRailLabelType.all,
             onDestinationSelected: (value) {
@@ -56,7 +52,7 @@ class _CompetitionState extends State<Competition> {
             trailing: const Flexible(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
+                children: <Widget>[
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
                     child: Text(

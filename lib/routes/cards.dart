@@ -130,7 +130,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -158,7 +158,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                       .addPostFrameCallback((_) {});
                                 },
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.edit,
                                     ),
@@ -170,7 +170,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                               PopupMenuItem(
                                 onTap: () {},
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.delete,
                                     ),

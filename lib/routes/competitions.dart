@@ -178,17 +178,13 @@ class _CompetitionsState extends State<Competitions> {
             onPressed: showDataDialog,
             tooltip: "Zobrazit data",
             icon: const Icon(Icons.data_object),
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
+            color: Colors.white,
           ),
         ],
-        title: Text(
+        title: const Text(
           "Seznam soutěží",
           style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
+            color: Colors.white,
           ),
         ),
       ),
@@ -218,7 +214,7 @@ class _CompetitionsState extends State<Competitions> {
                               items: [
                                 PopupMenuItem(
                                   child: const Row(
-                                    children: [
+                                    children: <Widget>[
                                       Icon(Icons.delete),
                                       SizedBox(width: 8),
                                       Text("Smazat"),

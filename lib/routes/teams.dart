@@ -12,24 +12,11 @@ class Teams extends StatefulWidget {
 
 class _TeamsState extends State<Teams> {
   final _newTeamFormKey = GlobalKey<FormState>();
-  final _newTeamNumberTextEditingControler = TextEditingController();
 
   Map<String, dynamic> newTeam = {};
 
-  bool isTeamNumberOccupied(int number) {
-    for (Team team in selectedCompetition!.teams) {
-      if (team.number == number) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   void createTeamDialog() {
     newTeam = {};
-    _newTeamNumberTextEditingControler.text = selectedCompetition!.teams.isEmpty
-        ? "1"
-        : "${selectedCompetition!.teams.last.number + 1}";
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -71,28 +58,6 @@ class _TeamsState extends State<Teams> {
                       });
                     },
                   ),
-                  TextFormField(
-                    controller: _newTeamNumberTextEditingControler,
-                    decoration: const InputDecoration(
-                      labelText: "Číslo hlídky",
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Zadejte číslo hlídky";
-                      } else if (int.tryParse(value) == null) {
-                        return "Zadejte platné číslo";
-                      } else if (isTeamNumberOccupied(int.parse(value))) {
-                        return "Toto číslo je již obsazené";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      setState(() {
-                        newTeam["number"] = int.parse(value!);
-                      });
-                    },
-                  ),
                   DropdownButtonFormField(
                     decoration: const InputDecoration(
                       labelText: "Organizace",
@@ -125,7 +90,7 @@ class _TeamsState extends State<Teams> {
                   ),
                   for (int i = 0; i < 2; i++)
                     Row(
-                      children: [
+                      children: <Widget>[
                         Flexible(
                           child: TextFormField(
                             decoration: const InputDecoration(
@@ -206,7 +171,9 @@ class _TeamsState extends State<Teams> {
 
                 selectedCompetition!.teams.add(
                   Team(
-                    number: newTeam["number"],
+                    // every team has a number of 0 when created
+                    // it is changed when adding their CompetitionCard
+                    number: 0,
                     category: newTeam["category"],
                     organization: newTeam["organization"],
                     members: [
@@ -222,10 +189,6 @@ class _TeamsState extends State<Teams> {
                       ),
                     ],
                   ),
-                );
-
-                selectedCompetition!.teams.sort(
-                  (a, b) => a.number.compareTo(b.number),
                 );
 
                 saveData();
@@ -262,7 +225,7 @@ class _TeamsState extends State<Teams> {
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -290,7 +253,7 @@ class _TeamsState extends State<Teams> {
                                       .addPostFrameCallback((_) {});
                                 },
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.edit,
                                     ),
@@ -302,7 +265,7 @@ class _TeamsState extends State<Teams> {
                               PopupMenuItem(
                                 onTap: () {},
                                 child: const Row(
-                                  children: [
+                                  children: <Widget>[
                                     Icon(
                                       Icons.delete,
                                     ),
