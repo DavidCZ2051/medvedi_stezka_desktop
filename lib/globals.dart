@@ -611,6 +611,11 @@ class Team {
             TeamMember.fromJson(member as Map<String, dynamic>)
         ];
 
+  bool get isYoung {
+    return [TeamCategory.one, TeamCategory.twoFemale, TeamCategory.twoMale]
+        .contains(category);
+  }
+
   Team({
     required this.number,
     required this.category,

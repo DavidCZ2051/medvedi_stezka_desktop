@@ -20,7 +20,7 @@ class _OrganizationsState extends State<Organizations> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Přidat organizaci"),
+        title: const Text("Přidat jednotu"),
         content: Form(
           key: _newOrganizationFormKey,
           child: SingleChildScrollView(
@@ -29,11 +29,11 @@ class _OrganizationsState extends State<Organizations> {
               children: <Widget>[
                 TextFormField(
                   decoration: const InputDecoration(
-                    labelText: "Název organizace",
+                    labelText: "Název jednoty",
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Zadejte název organizace";
+                      return "Zadejte název jednoty";
                     }
                     return null;
                   },
@@ -83,14 +83,14 @@ class _OrganizationsState extends State<Organizations> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         heroTag: "createOrganization",
-        tooltip: "Přidat organizaci",
+        tooltip: "Přidat jednotu",
         onPressed: createOrganizationDialog,
         child: const Icon(Icons.add),
       ),
       body: selectedCompetition!.organizations.isEmpty
           ? const Center(
               child: Text(
-                "Zatím žádné organizace...",
+                "Zatím žádné jednoty...",
                 style: TextStyle(
                   fontSize: 24,
                 ),
@@ -103,7 +103,7 @@ class _OrganizationsState extends State<Organizations> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "Počet organizací: ${selectedCompetition!.organizations.length}",
+                      "Počet jednot: ${selectedCompetition!.organizations.length}",
                       style: const TextStyle(fontSize: 18),
                     ),
                   ),

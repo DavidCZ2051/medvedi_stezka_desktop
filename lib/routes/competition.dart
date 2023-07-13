@@ -16,6 +16,7 @@ class Competition extends StatefulWidget {
 }
 
 class _CompetitionState extends State<Competition> {
+  final PageController pageController = PageController(initialPage: 0);
   int selectedIndex = 0;
 
   @override
@@ -45,6 +46,7 @@ class _CompetitionState extends State<Competition> {
             labelType: NavigationRailLabelType.all,
             onDestinationSelected: (value) {
               setState(() {
+                pageController.jumpToPage(value);
                 selectedIndex = value;
               });
             },
@@ -70,7 +72,7 @@ class _CompetitionState extends State<Competition> {
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.business),
-                label: Text("Organizace"),
+                label: Text("Jednoty"),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.people),
@@ -92,9 +94,10 @@ class _CompetitionState extends State<Competition> {
           ),
           const VerticalDivider(),
           Expanded(
-            child: IndexedStack(
-              index: selectedIndex,
-              children: const [
+            child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: pageController,
+              children: const <Widget>[
                 Placeholder(),
                 Organizations(),
                 Teams(),
