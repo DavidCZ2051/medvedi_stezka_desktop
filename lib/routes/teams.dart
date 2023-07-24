@@ -279,7 +279,7 @@ class _TeamsState extends State<Teams> {
                         },
                         child: ListTile(
                           leading: Text(
-                            "${team.number}",
+                            "${team.number == 0 ? "?" : team.number}",
                             style: const TextStyle(fontSize: 20),
                           ),
                           title: Text("${team.category}"),
