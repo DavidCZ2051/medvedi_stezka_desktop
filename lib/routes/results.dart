@@ -36,7 +36,7 @@ class _ResultsState extends State<Results> {
               label: Text("Rok narození"),
             ),
             DataColumn(
-              label: Text("Organizace"),
+              label: Text("Jednota"),
             ),
             DataColumn(
               label: Text("Start"),
@@ -86,14 +86,14 @@ class _ResultsState extends State<Results> {
                     Text(card.team.organization),
                   ),
                   DataCell(
-                    Text(formatDateTime(card.start)),
+                    Text(formatTime(card.startSeconds)),
                   ),
                   DataCell(
-                    Text(formatDateTime(card.finish)),
+                    Text(formatTime(card.finishSeconds)),
                   ),
                   DataCell(
                     Text(
-                      formatDuration(card.finish.difference(card.start)),
+                      formatTime(card.finishSeconds - card.startSeconds),
                     ),
                   ),
                   DataCell(

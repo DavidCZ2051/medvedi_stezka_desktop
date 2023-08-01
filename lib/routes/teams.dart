@@ -60,7 +60,7 @@ class _TeamsState extends State<Teams> {
                   ),
                   DropdownButtonFormField(
                     decoration: const InputDecoration(
-                      labelText: "Organizace",
+                      labelText: "Jednota",
                     ),
                     value: newTeam["organization"],
                     items: [
