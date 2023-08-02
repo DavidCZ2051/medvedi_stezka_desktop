@@ -116,12 +116,12 @@ class _ChecksState extends State<Checks> {
                       value: newCheck["type"],
                       items: [
                         DropdownMenuItem(
-                          value: CheckType.deaf,
-                          child: Text("${CheckType.deaf}"),
-                        ),
-                        DropdownMenuItem(
                           value: CheckType.live,
                           child: Text("${CheckType.live}"),
+                        ),
+                        DropdownMenuItem(
+                          value: CheckType.deaf,
+                          child: Text("${CheckType.deaf}"),
                         ),
                       ],
                       validator: (value) {

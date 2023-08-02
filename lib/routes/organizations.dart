@@ -47,7 +47,7 @@ class _OrganizationsState extends State<Organizations> {
             ),
           ),
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.pop(context);
@@ -121,7 +121,7 @@ class _OrganizationsState extends State<Organizations> {
                               tap.globalPosition.dx,
                               tap.globalPosition.dy,
                             ),
-                            items: [
+                            items: <PopupMenuItem>[
                               PopupMenuItem(
                                 onTap: () {
                                   WidgetsBinding.instance

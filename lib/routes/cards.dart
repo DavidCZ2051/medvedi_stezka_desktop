@@ -30,6 +30,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
       TextEditingController();
 
   Map<String, dynamic> newCompetitionCard = {};
+  int biggestQuestionsCount = 0;
 
   bool isNumberOccupied(int teamNumber) {
     for (CompetitionCard card in selectedCompetition!.cards) {
@@ -61,8 +62,21 @@ class _CompetitionCardsState extends State<CompetitionCards> {
     return hours * 3600 + minutes * 60 + seconds;
   }
 
+  int getBiggestQuestionsCount(List<DeafCheck> checks) {
+    int biggest = 0;
+    for (DeafCheck check in checks) {
+      if (check.questions.length > biggest) {
+        biggest = check.questions.length;
+      }
+    }
+    return biggest;
+  }
+
   void createCompetitionCardDialog() {
     newCompetitionCard = {};
+    biggestQuestionsCount = getBiggestQuestionsCount(
+      selectedCompetition!.checks.whereType<DeafCheck>().toList(),
+    );
 
     _newCompetitionCardStartHoursController.text = "";
     _newCompetitionCardStartMinutesController.text = "";
@@ -75,18 +89,21 @@ class _CompetitionCardsState extends State<CompetitionCards> {
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-          builder: (context, setState) => AlertDialog(
-                title: const Text("Přidat kartu"),
-                content: Form(
-                  key: _newCompetitionCardFormKey,
-                  child: SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minWidth: 700,
-                        minHeight: 400,
-                      ),
+        builder: (context, setState) => AlertDialog(
+          title: const Text("Přidat kartu"),
+          content: Form(
+            key: _newCompetitionCardFormKey,
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: 800,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
                       child: Column(
-                        mainAxisSize: MainAxisSize.max,
+                        mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Row(
                             children: [
@@ -104,7 +121,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                         DropdownMenuItem(
                                           value: team,
                                           child: Text(
-                                            "${team.organization}: ${team.members[0].lastName}, ${team.members[1].lastName}",
+                                            "${team.organization} - ${team.category}: ${team.members[0].lastName}, ${team.members[1].lastName} ",
                                           ),
                                         ),
                                   ],
@@ -161,470 +178,712 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 16),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Expanded(
-                                child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Čas start",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        Row(
-                                          children: [
-                                            // hodiny
-                                            Flexible(
-                                              child: TextFormField(
-                                                controller:
-                                                    _newCompetitionCardStartHoursController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onChanged: (value) {
-                                                  if (value.length == 1) {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
-                                                  }
-                                                },
-                                                textAlign: TextAlign.center,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: "Hodiny",
-                                                ),
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                  LengthLimitingTextInputFormatter(
-                                                    1,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.all(4.0),
-                                              child: Text(
-                                                ":",
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                            // minuty
-                                            Flexible(
-                                              child: TextFormField(
-                                                controller:
-                                                    _newCompetitionCardStartMinutesController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onChanged: (value) {
-                                                  if (_newCompetitionCardStartHoursController
-                                                          .text ==
-                                                      "") {
-                                                    _newCompetitionCardStartHoursController
-                                                        .text = "00";
-                                                  }
-
-                                                  if (value.length == 2) {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
-                                                  }
-                                                },
-                                                textAlign: TextAlign.center,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: "Minuty",
-                                                ),
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                  LengthLimitingTextInputFormatter(
-                                                    2,
-                                                  ),
-                                                  FilteringTextInputFormatter
-                                                      .allow(
-                                                    RegExp(
-                                                      r"^(0?[0-9]|[1-5][0-9])$",
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.all(4.0),
-                                              child: Text(
-                                                ":",
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                            // sekundy
-                                            Flexible(
-                                              child: TextFormField(
-                                                controller:
-                                                    _newCompetitionCardStartSecondsController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onChanged: (value) {
-                                                  if (_newCompetitionCardStartHoursController
-                                                          .text ==
-                                                      "") {
-                                                    _newCompetitionCardStartHoursController
-                                                        .text = "00";
-                                                  }
-
-                                                  if (_newCompetitionCardStartMinutesController
-                                                          .text ==
-                                                      "") {
-                                                    _newCompetitionCardStartMinutesController
-                                                        .text = "00";
-                                                  }
-
-                                                  if (value.length == 2) {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
-                                                  }
-                                                },
-                                                textAlign: TextAlign.center,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: "Sekundy",
-                                                ),
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                  LengthLimitingTextInputFormatter(
-                                                    2,
-                                                  ),
-                                                  FilteringTextInputFormatter
-                                                      .allow(
-                                                    RegExp(
-                                                      r"^(0?[0-9]|[1-5][0-9])$",
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Čas cíl",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        Row(
-                                          children: [
-                                            // hodiny
-                                            Flexible(
-                                              child: TextFormField(
-                                                controller:
-                                                    _newCompetitionCardFinishHoursController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onChanged: (value) {
-                                                  if (_newCompetitionCardStartSecondsController
-                                                          .text ==
-                                                      "") {
-                                                    _newCompetitionCardStartSecondsController
-                                                        .text = "00";
-                                                  }
-
-                                                  if (value.length == 1) {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
-                                                  }
-                                                },
-                                                textAlign: TextAlign.center,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: "Hodiny",
-                                                ),
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                  LengthLimitingTextInputFormatter(
-                                                    1,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.all(4.0),
-                                              child: Text(
-                                                ":",
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                            // minuty
-                                            Flexible(
-                                              child: TextFormField(
-                                                controller:
-                                                    _newCompetitionCardFinishMinutesController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onChanged: (value) {
-                                                  if (_newCompetitionCardStartSecondsController
-                                                          .text ==
-                                                      "") {
-                                                    _newCompetitionCardStartSecondsController
-                                                        .text = "00";
-                                                  }
-
-                                                  if (_newCompetitionCardFinishHoursController
-                                                          .text ==
-                                                      "") {
-                                                    _newCompetitionCardFinishHoursController
-                                                        .text = "00";
-                                                  }
-
-                                                  if (value.length == 2) {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
-                                                  }
-                                                },
-                                                textAlign: TextAlign.center,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: "Minuty",
-                                                ),
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                  LengthLimitingTextInputFormatter(
-                                                    2,
-                                                  ),
-                                                  FilteringTextInputFormatter
-                                                      .allow(
-                                                    RegExp(
-                                                      r"^(0?[0-9]|[1-5][0-9])$",
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.all(4.0),
-                                              child: Text(
-                                                ":",
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                            // sekundy
-                                            Flexible(
-                                              child: TextFormField(
-                                                controller:
-                                                    _newCompetitionCardFinishSecondsController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onChanged: (value) {
-                                                  if (_newCompetitionCardFinishHoursController
-                                                          .text ==
-                                                      "") {
-                                                    _newCompetitionCardFinishHoursController
-                                                        .text = "00";
-                                                  }
-
-                                                  if (_newCompetitionCardFinishMinutesController
-                                                          .text ==
-                                                      "") {
-                                                    _newCompetitionCardFinishMinutesController
-                                                        .text = "00";
-                                                  }
-
-                                                  if (value.length == 2) {
-                                                    FocusScope.of(context)
-                                                        .nextFocus();
-                                                  }
-                                                },
-                                                textAlign: TextAlign.center,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: "Sekundy",
-                                                ),
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                  LengthLimitingTextInputFormatter(
-                                                    2,
-                                                  ),
-                                                  FilteringTextInputFormatter
-                                                      .allow(
-                                                    RegExp(
-                                                      r"^(0?[0-9]|[1-5][0-9])$",
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          /* // using a DataTable sounds like a good idea, but it probably isn't
-                          DataTable(
-                            columns: [
-                              for (DeafCheck check in selectedCompetition!
-                                  .checks
-                                  .whereType<DeafCheck>())
-                                DataColumn(
-                                  label: Text(
-                                    "H${check.number} ${check.name}",
-                                  ),
-                                ),
-                            ],
-                            rows: [
-                              // every DeafCheck shoul have a cell for every question in that check under it. If there are no questions. If the number of questions is not the same for every check, place an empty cell.
-                              DataRow(
-                                cells: [
-                                  for (DeafCheck check in selectedCompetition!
-                                      .checks
-                                      .whereType<DeafCheck>())
-                                    DataCell(
-                                      SizedBox(
-                                        height: 1000,
-                                        width: 100,
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                                "H${check.number} ${check.name}"),
-                                            for (Question question
-                                                in check.questions)
-                                              Expanded(
-                                                child: TextFormField(),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ), */
-                          /* // young
-                          if (newCompetitionCard["team"] != null &&
-                              newCompetitionCard["team"].isYoung)
-                            for (Check check
-                                in selectedCompetition!.checks.where(
-                              (check) =>
-                                  check.type == CheckType.deaf &&
-                                  (check as DeafCheck).category ==
-                                      DeafCheckCategory.young,
-                            ))
-                              Column(
-                                children: [
-                                  Text(
-                                      "H${check.number} (Mladší) ${check.name}"),
-                                ],
-                              ),
-                          // old
-                          if (newCompetitionCard["team"] != null &&
-                              !newCompetitionCard["team"].isYoung)
-                            for (Check check
-                                in selectedCompetition!.checks.where(
-                              (check) =>
-                                  check.type == CheckType.deaf &&
-                                  (check as DeafCheck).category ==
-                                      DeafCheckCategory.old,
-                            ))
-                              SizedBox(
-                                height: 400,
-                                width: 50,
+                              FocusTraversalGroup(
                                 child: Column(
                                   children: [
-                                    Text(
-                                        "H${check.number} (Starší) ${check.name}"),
-                                    for (Question question
-                                        in (check as DeafCheck).questions)
-                                      Expanded(
-                                        child: TextFormField(),
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Čas start",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            Row(
+                                              children: [
+                                                // hodiny
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte hodiny";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    controller:
+                                                        _newCompetitionCardStartHoursController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (value.length == 1) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "H",
+                                                    ),
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        1,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const Padding(
+                                                  padding: EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ":",
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // minuty
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte minuty";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    controller:
+                                                        _newCompetitionCardStartMinutesController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (_newCompetitionCardStartHoursController
+                                                              .text ==
+                                                          "") {
+                                                        _newCompetitionCardStartHoursController
+                                                            .text = "00";
+                                                      }
+
+                                                      if (value.length == 2) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "M",
+                                                    ),
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        2,
+                                                      ),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                          r"^(0?[0-9]|[1-5][0-9])$",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const Padding(
+                                                  padding: EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ":",
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // sekundy
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte sekundy";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    controller:
+                                                        _newCompetitionCardStartSecondsController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (_newCompetitionCardStartHoursController
+                                                              .text ==
+                                                          "") {
+                                                        _newCompetitionCardStartHoursController
+                                                            .text = "00";
+                                                      }
+
+                                                      if (_newCompetitionCardStartMinutesController
+                                                              .text ==
+                                                          "") {
+                                                        _newCompetitionCardStartMinutesController
+                                                            .text = "00";
+                                                      }
+
+                                                      if (value.length == 2) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "S",
+                                                    ),
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        2,
+                                                      ),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                          r"^(0?[0-9]|[1-5][0-9])$",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
+                                    ),
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Čas cíl",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            Row(
+                                              children: [
+                                                // hodiny
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte hodiny";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    controller:
+                                                        _newCompetitionCardFinishHoursController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (_newCompetitionCardStartSecondsController
+                                                              .text ==
+                                                          "") {
+                                                        _newCompetitionCardStartSecondsController
+                                                            .text = "00";
+                                                      }
+
+                                                      if (value.length == 1) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "H",
+                                                    ),
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        1,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const Padding(
+                                                  padding: EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ":",
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // minuty
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte minuty";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    controller:
+                                                        _newCompetitionCardFinishMinutesController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (_newCompetitionCardStartSecondsController
+                                                              .text ==
+                                                          "") {
+                                                        _newCompetitionCardStartSecondsController
+                                                            .text = "00";
+                                                      }
+
+                                                      if (_newCompetitionCardFinishHoursController
+                                                              .text ==
+                                                          "") {
+                                                        _newCompetitionCardFinishHoursController
+                                                            .text = "00";
+                                                      }
+
+                                                      if (value.length == 2) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "M",
+                                                    ),
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        2,
+                                                      ),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                          r"^(0?[0-9]|[1-5][0-9])$",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const Padding(
+                                                  padding: EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ":",
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // sekundy
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte sekundy";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    controller:
+                                                        _newCompetitionCardFinishSecondsController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (_newCompetitionCardFinishHoursController
+                                                              .text ==
+                                                          "") {
+                                                        _newCompetitionCardFinishHoursController
+                                                            .text = "00";
+                                                      }
+
+                                                      if (_newCompetitionCardFinishMinutesController
+                                                              .text ==
+                                                          "") {
+                                                        _newCompetitionCardFinishMinutesController
+                                                            .text = "00";
+                                                      }
+
+                                                      if (value.length == 2) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "S",
+                                                    ),
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        2,
+                                                      ),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                          r"^(0?[0-9]|[1-5][0-9])$",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
-                              ) */
+                              ),
+                              const Spacer(),
+                              DataTable(
+                                border: TableBorder.all(),
+                                columns: const [
+                                  DataColumn(
+                                    label: Text(
+                                      "Kontrola",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Text(
+                                      "Trestný čas",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Text(
+                                      "Čekačka",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                rows: [
+                                  for (LiveCheck check in selectedCompetition!
+                                      .checks
+                                      .whereType<LiveCheck>())
+                                    DataRow(
+                                      cells: [
+                                        DataCell(
+                                          Text(
+                                            "Ž${check.number} - ${check.name}",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        DataCell(
+                                          Row(
+                                            children: [
+                                              // minuty
+                                              SizedBox(
+                                                width: 50,
+                                                child: TextFormField(
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return "Zadejte minuty";
+                                                    }
+                                                    return null;
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onChanged: (value) {
+                                                    if (value.length == 2) {
+                                                      FocusScope.of(context)
+                                                          .nextFocus();
+                                                    }
+                                                  },
+                                                  textAlign: TextAlign.center,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    hintText: "M",
+                                                  ),
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly,
+                                                    LengthLimitingTextInputFormatter(
+                                                      2,
+                                                    ),
+                                                    FilteringTextInputFormatter
+                                                        .allow(
+                                                      RegExp(
+                                                        r"^(0?[0-9]|[1-5][0-9])$",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.all(4.0),
+                                                child: Text(
+                                                  ":",
+                                                  style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                              // sekundy
+                                              SizedBox(
+                                                width: 50,
+                                                child: TextFormField(
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return "Zadejte sekundy";
+                                                    }
+                                                    return null;
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onChanged: (value) {
+                                                    if (value.length == 2) {
+                                                      FocusScope.of(context)
+                                                          .nextFocus();
+                                                    }
+                                                  },
+                                                  textAlign: TextAlign.center,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    hintText: "S",
+                                                  ),
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly,
+                                                    LengthLimitingTextInputFormatter(
+                                                      2,
+                                                    ),
+                                                    FilteringTextInputFormatter
+                                                        .allow(
+                                                      RegExp(
+                                                        r"^(0?[0-9]|[1-5][0-9])$",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        DataCell(
+                                          Row(
+                                            children: [
+                                              // minuty
+                                              SizedBox(
+                                                width: 50,
+                                                child: TextFormField(
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return "Zadejte minuty";
+                                                    }
+                                                    return null;
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onChanged: (value) {
+                                                    if (value.length == 2) {
+                                                      FocusScope.of(context)
+                                                          .nextFocus();
+                                                    }
+                                                  },
+                                                  textAlign: TextAlign.center,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    hintText: "M",
+                                                  ),
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly,
+                                                    LengthLimitingTextInputFormatter(
+                                                      2,
+                                                    ),
+                                                    FilteringTextInputFormatter
+                                                        .allow(
+                                                      RegExp(
+                                                        r"^(0?[0-9]|[1-5][0-9])$",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.all(4.0),
+                                                child: Text(
+                                                  ":",
+                                                  style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                              // sekundy
+                                              SizedBox(
+                                                width: 50,
+                                                child: TextFormField(
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return "Zadejte sekundy";
+                                                    }
+                                                    return null;
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onChanged: (value) {
+                                                    if (value.length == 2) {
+                                                      FocusScope.of(context)
+                                                          .nextFocus();
+                                                    }
+                                                  },
+                                                  textAlign: TextAlign.center,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    hintText: "S",
+                                                  ),
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly,
+                                                    LengthLimitingTextInputFormatter(
+                                                      2,
+                                                    ),
+                                                    FilteringTextInputFormatter
+                                                        .allow(
+                                                      RegExp(
+                                                        r"^(0?[0-9]|[1-5][0-9])$",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Zrušit"),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      if (_newCompetitionCardFormKey.currentState!.validate()) {
-                        _newCompetitionCardFormKey.currentState!.save();
-
-                        selectedCompetition!.cards.add(
-                          CompetitionCard(
-                            team: Team(
-                              // team number is assigned here
-                              number: newCompetitionCard["teamNumber"],
-                              category: newCompetitionCard["team"].category,
-                              members: newCompetitionCard["team"].members,
-                              organization:
-                                  newCompetitionCard["team"].organization,
+                    const SizedBox(width: 8),
+                    const SizedBox(
+                      height: 400,
+                      child: VerticalDivider(),
+                    ),
+                    const SizedBox(width: 8),
+                    DataTable(
+                      border: TableBorder.all(),
+                      columns: [
+                        for (DeafCheck check in selectedCompetition!.checks
+                            .whereType<DeafCheck>())
+                          DataColumn(
+                            label: Text(
+                              "H${check.number} - ${check.name}",
+                              style: const TextStyle(fontSize: 16),
                             ),
-                            startSeconds: getStartSeconds(),
-                            finishSeconds: getFinishSeconds(),
                           ),
-                        );
+                      ],
+                      rows: [
+                        for (int i = 0; i < biggestQuestionsCount; i++)
+                          DataRow(
+                            cells: [
+                              for (DeafCheck check in selectedCompetition!
+                                  .checks
+                                  .whereType<DeafCheck>())
+                                DataCell(
+                                  // TODO: add fields
+                                  Text(check.questions[i].correctAnswer),
+                                ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Zrušit"),
+            ),
+            OutlinedButton(
+              onPressed: () {
+                if (_newCompetitionCardFormKey.currentState!.validate()) {
+                  _newCompetitionCardFormKey.currentState!.save();
 
-                        // find the appropriate team and give them the number
-                        for (Team team in selectedCompetition!.teams) {
-                          if (team == newCompetitionCard["team"]) {
-                            team.number = newCompetitionCard["teamNumber"];
-                          }
-                        }
+                  selectedCompetition!.cards.add(
+                    CompetitionCard(
+                      team: Team(
+                        // team number is assigned here
+                        number: newCompetitionCard["teamNumber"],
+                        category: newCompetitionCard["team"].category,
+                        members: newCompetitionCard["team"].members,
+                        organization: newCompetitionCard["team"].organization,
+                      ),
+                      startSeconds: getStartSeconds(),
+                      finishSeconds: getFinishSeconds(),
+                    ),
+                  );
 
-                        selectedCompetition!.cards.sort(
-                          (a, b) => a.team.number.compareTo(b.team.number),
-                        );
+                  // find the appropriate team and give them the number
+                  for (Team team in selectedCompetition!.teams) {
+                    if (team == newCompetitionCard["team"]) {
+                      team.number = newCompetitionCard["teamNumber"];
+                    }
+                  }
 
-                        saveData();
+                  selectedCompetition!.cards.sort(
+                    (a, b) => a.team.number.compareTo(b.team.number),
+                  );
 
-                        setState(() {});
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: const Text("Přidat"),
-                  ),
-                ],
-              )),
+                  saveData();
+
+                  setState(() {});
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text("Přidat"),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

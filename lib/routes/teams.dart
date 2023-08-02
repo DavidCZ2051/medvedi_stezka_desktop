@@ -34,7 +34,7 @@ class _TeamsState extends State<Teams> {
                       labelText: "Kategorie",
                     ),
                     value: newTeam["category"],
-                    items: [
+                    items: <DropdownMenuItem>[
                       for (TeamCategory category in TeamCategory.values)
                         DropdownMenuItem(
                           value: category,
@@ -63,7 +63,7 @@ class _TeamsState extends State<Teams> {
                       labelText: "Jednota",
                     ),
                     value: newTeam["organization"],
-                    items: [
+                    items: <DropdownMenuItem>[
                       for (String organization
                           in selectedCompetition!.organizations)
                         DropdownMenuItem(
@@ -157,7 +157,7 @@ class _TeamsState extends State<Teams> {
             ),
           ),
         ),
-        actions: [
+        actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.pop(context);
@@ -176,7 +176,7 @@ class _TeamsState extends State<Teams> {
                     number: 0,
                     category: newTeam["category"],
                     organization: newTeam["organization"],
-                    members: [
+                    members: <TeamMember>[
                       TeamMember(
                         firstName: newTeam["firstName0"],
                         lastName: newTeam["lastName0"],
@@ -246,7 +246,7 @@ class _TeamsState extends State<Teams> {
                               tap.globalPosition.dx,
                               tap.globalPosition.dy,
                             ),
-                            items: [
+                            items: <PopupMenuItem>[
                               PopupMenuItem(
                                 onTap: () {
                                   WidgetsBinding.instance

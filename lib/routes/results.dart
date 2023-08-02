@@ -63,10 +63,10 @@ class _ResultsState extends State<Results> {
               tooltip: "H:MM:SS",
             ),
           ],
-          rows: [
+          rows: <DataRow>[
             for (CompetitionCard card in selectedCompetition!.cards)
               DataRow(
-                cells: [
+                cells: <DataCell>[
                   DataCell(
                     Text("${selectedCompetition!.getPlace(card)}"),
                   ),

@@ -158,17 +158,17 @@ class Competition {
         "type": type.toString(),
         "location": location,
         "year": year,
-        "teams": [
+        "teams": <Map>[
           for (Team team in teams) team.toJson(),
         ],
-        "checks": [
+        "checks": <Map>[
           for (Check check in checks)
             if (check is DeafCheck)
               check.toJson()
             else if (check is LiveCheck)
               check.toJson()
         ],
-        "cards": [
+        "cards": <Map>[
           for (CompetitionCard card in cards) card.toJson(),
         ],
         "organizations": organizations,
@@ -242,7 +242,7 @@ class Team {
         "number": number,
         "organization": organization,
         "category": category.toString(),
-        "members": [
+        "members": <Map>[
           for (TeamMember member in members) member.toJson(),
         ]
       };
@@ -290,7 +290,7 @@ class DeafCheck extends Check {
         "name": name,
         "category": category.toString(),
         "type": type.toString(),
-        "questions": [
+        "questions": <Map>[
           for (Question question in questions) question.toJson(),
         ]
       };
@@ -301,7 +301,7 @@ class DeafCheck extends Check {
       name: json["name"],
       category: DeafCheckCategory.fromString(json["category"])!,
       type: CheckType.fromString(json["type"])!,
-      questions: [
+      questions: <Question>[
         for (Map question in json["questions"])
           Question(
             number: question["number"],
@@ -382,7 +382,7 @@ class CompetitionCard {
         "team": team.toJson(),
         "startSeconds": startSeconds,
         "finishSeconds": finishSeconds,
-        "checks": [
+        "checks": <Map>[
           for (Check check in checks)
             if (check is DeafCheck)
               check.toJson()
