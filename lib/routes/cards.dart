@@ -105,78 +105,80 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 5,
-                                child: DropdownButtonFormField(
-                                  decoration: const InputDecoration(
-                                    labelText: "Hlídka",
-                                  ),
-                                  value: newCompetitionCard["team"],
-                                  items: [
-                                    for (Team team
-                                        in selectedCompetition!.teams)
-                                      if (!isNumberOccupied(team.number))
-                                        DropdownMenuItem(
-                                          value: team,
-                                          child: Text(
-                                            "${team.organization} - ${team.category}: ${team.members[0].lastName}, ${team.members[1].lastName} ",
+                          FocusTraversalGroup(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: DropdownButtonFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: "Hlídka",
+                                    ),
+                                    value: newCompetitionCard["team"],
+                                    items: [
+                                      for (Team team
+                                          in selectedCompetition!.teams)
+                                        if (!isNumberOccupied(team.number))
+                                          DropdownMenuItem(
+                                            value: team,
+                                            child: Text(
+                                              "${team.organization} - ${team.category}: ${team.members[0].lastName}, ${team.members[1].lastName} ",
+                                            ),
                                           ),
-                                        ),
-                                  ],
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return "Vyberte hlídku";
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (value) {
-                                    setState(() {
-                                      newCompetitionCard["team"] = value;
-                                    });
-                                  },
-                                  onSaved: (value) {
-                                    setState(() {
-                                      newCompetitionCard["team"] = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                flex: 1,
-                                child: TextFormField(
-                                  decoration: const InputDecoration(
-                                    labelText: "Číslo týmu",
+                                    ],
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return "Vyberte hlídku";
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (value) {
+                                      setState(() {
+                                        newCompetitionCard["team"] = value;
+                                      });
+                                    },
+                                    onSaved: (value) {
+                                      setState(() {
+                                        newCompetitionCard["team"] = value;
+                                      });
+                                    },
                                   ),
-                                  keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Zadejte číslo týmu";
-                                    } else if (int.tryParse(value) == null) {
-                                      return "Zadejte platné číslo";
-                                    } else if (isNumberOccupied(
-                                        int.parse(value))) {
-                                      return "Číslo je již obsazené";
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (value) {
-                                    setState(() {
-                                      newCompetitionCard["teamNumber"] =
-                                          int.tryParse(value);
-                                    });
-                                  },
-                                  onSaved: (value) {
-                                    setState(() {
-                                      newCompetitionCard["teamNumber"] =
-                                          int.parse(value!);
-                                    });
-                                  },
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  flex: 1,
+                                  child: TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: "Číslo týmu",
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Zadejte číslo týmu";
+                                      } else if (int.tryParse(value) == null) {
+                                        return "Zadejte platné číslo";
+                                      } else if (isNumberOccupied(
+                                          int.parse(value))) {
+                                        return "Číslo je již obsazené";
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (value) {
+                                      setState(() {
+                                        newCompetitionCard["teamNumber"] =
+                                            int.tryParse(value);
+                                      });
+                                    },
+                                    onSaved: (value) {
+                                      setState(() {
+                                        newCompetitionCard["teamNumber"] =
+                                            int.parse(value!);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 16),
                           Row(
@@ -798,39 +800,75 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    const SizedBox(
-                      height: 400,
-                      child: VerticalDivider(),
-                    ),
-                    const SizedBox(width: 8),
-                    DataTable(
-                      border: TableBorder.all(),
-                      columns: [
-                        for (DeafCheck check in selectedCompetition!.checks
-                            .whereType<DeafCheck>())
-                          DataColumn(
-                            label: Text(
-                              "H${check.number} - ${check.name}",
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ),
-                      ],
-                      rows: [
-                        for (int i = 0; i < biggestQuestionsCount; i++)
-                          DataRow(
-                            cells: [
-                              for (DeafCheck check in selectedCompetition!
-                                  .checks
-                                  .whereType<DeafCheck>())
-                                DataCell(
-                                  // TODO: add fields
-                                  Text(check.questions[i].correctAnswer),
+                    if (newCompetitionCard["team"] != null)
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          height: 400,
+                          child: VerticalDivider(),
+                        ),
+                      ),
+                    if (newCompetitionCard["team"] != null)
+                      FocusTraversalGroup(
+                        child: DataTable(
+                          border: TableBorder.all(),
+                          columns: [
+                            for (DeafCheck check in selectedCompetition!.checks
+                                .whereType<DeafCheck>())
+                              if ((newCompetitionCard["team"].isYoung &&
+                                      check.category ==
+                                          DeafCheckCategory.young) ||
+                                  (!newCompetitionCard["team"].isYoung &&
+                                      check.category == DeafCheckCategory.old))
+                                DataColumn(
+                                  label: Text(
+                                    "H${check.number} - ${check.name}",
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
                                 ),
-                            ],
-                          ),
-                      ],
-                    ),
+                          ],
+                          rows: [
+                            for (int i = 0; i < biggestQuestionsCount; i++)
+                              DataRow(
+                                cells: [
+                                  for (DeafCheck check in selectedCompetition!
+                                      .checks
+                                      .whereType<DeafCheck>())
+                                    if ((newCompetitionCard["team"].isYoung &&
+                                            check.category ==
+                                                DeafCheckCategory.young) ||
+                                        (!newCompetitionCard["team"].isYoung &&
+                                            check.category ==
+                                                DeafCheckCategory.old))
+                                      DataCell(
+                                        TextFormField(
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(1),
+                                            UpperCaseTextFormatter(),
+                                          ],
+                                          decoration: InputDecoration(
+                                            hintText: "${i + 1}",
+                                          ),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Zadejte odpověď";
+                                            }
+                                            return null;
+                                          },
+                                          onChanged: (value) {
+                                            if (value.isNotEmpty) {
+                                              FocusScope.of(context)
+                                                  .nextFocus();
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),

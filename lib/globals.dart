@@ -1,3 +1,6 @@
+// packages
+import 'package:flutter/services.dart';
+
 const String appVersion = "1.0.0-DEV";
 
 List<Competition> competitions = [];
@@ -442,4 +445,15 @@ class CompetitionCard {
     required this.startSeconds,
     required this.finishSeconds,
   });
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
+  }
 }
