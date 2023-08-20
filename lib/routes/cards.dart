@@ -29,6 +29,9 @@ class _CompetitionCardsState extends State<CompetitionCards> {
   final TextEditingController _newCompetitionCardFinishSecondsController =
       TextEditingController();
 
+  List<List<TextEditingController>> deafCheckDataTableTextEditingControllers =
+      [];
+
   Map<String, dynamic> newCompetitionCard = {};
   int biggestQuestionsCount = 0;
 
@@ -72,8 +75,25 @@ class _CompetitionCardsState extends State<CompetitionCards> {
     return biggest;
   }
 
+  void createDeafCheckDataTableTextEditingControllers() {
+    deafCheckDataTableTextEditingControllers = [
+      for (DeafCheck check in selectedCompetition!.checks
+          .whereType<DeafCheck>()
+          .where((check) =>
+              check.category == DeafCheckCategory.young &&
+                  newCompetitionCard["team"].isYoung ||
+              check.category == DeafCheckCategory.old &&
+                  !newCompetitionCard["team"].isYoung))
+        [
+          for (int i = 0; i < check.questions.length; i++)
+            TextEditingController(),
+        ],
+    ];
+  }
+
   void createCompetitionCardDialog() {
     newCompetitionCard = {};
+    deafCheckDataTableTextEditingControllers = [];
     biggestQuestionsCount = getBiggestQuestionsCount(
       selectedCompetition!.checks.whereType<DeafCheck>().toList(),
     );
@@ -133,9 +153,9 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                       return null;
                                     },
                                     onChanged: (value) {
-                                      setState(() {
-                                        newCompetitionCard["team"] = value;
-                                      });
+                                      newCompetitionCard["team"] = value;
+                                      createDeafCheckDataTableTextEditingControllers();
+                                      setState(() {});
                                     },
                                     onSaved: (value) {
                                       setState(() {
@@ -603,191 +623,197 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                           ),
                                         ),
                                         DataCell(
-                                          Row(
-                                            children: [
-                                              // minuty
-                                              SizedBox(
-                                                width: 50,
-                                                child: TextFormField(
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return "Zadejte minuty";
-                                                    }
-                                                    return null;
-                                                  },
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  onChanged: (value) {
-                                                    if (value.length == 2) {
-                                                      FocusScope.of(context)
-                                                          .nextFocus();
-                                                    }
-                                                  },
-                                                  textAlign: TextAlign.center,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    hintText: "M",
-                                                  ),
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter
-                                                        .digitsOnly,
-                                                    LengthLimitingTextInputFormatter(
-                                                      2,
+                                          FocusTraversalGroup(
+                                            child: Row(
+                                              children: [
+                                                // minuty
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte minuty";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (value.length == 2) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "M",
                                                     ),
-                                                    FilteringTextInputFormatter
-                                                        .allow(
-                                                      RegExp(
-                                                        r"^(0?[0-9]|[1-5][0-9])$",
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        2,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.all(4.0),
-                                                child: Text(
-                                                  ":",
-                                                  style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ),
-                                              // sekundy
-                                              SizedBox(
-                                                width: 50,
-                                                child: TextFormField(
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return "Zadejte sekundy";
-                                                    }
-                                                    return null;
-                                                  },
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  onChanged: (value) {
-                                                    if (value.length == 2) {
-                                                      FocusScope.of(context)
-                                                          .nextFocus();
-                                                    }
-                                                  },
-                                                  textAlign: TextAlign.center,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    hintText: "S",
-                                                  ),
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter
-                                                        .digitsOnly,
-                                                    LengthLimitingTextInputFormatter(
-                                                      2,
-                                                    ),
-                                                    FilteringTextInputFormatter
-                                                        .allow(
-                                                      RegExp(
-                                                        r"^(0?[0-9]|[1-5][0-9])$",
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                          r"^(0?[0-9]|[1-5][0-9])$",
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                                const Padding(
+                                                  padding: EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ":",
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // sekundy
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte sekundy";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (value.length == 2) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "S",
+                                                    ),
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        2,
+                                                      ),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                          r"^(0?[0-9]|[1-5][0-9])$",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                         DataCell(
-                                          Row(
-                                            children: [
-                                              // minuty
-                                              SizedBox(
-                                                width: 50,
-                                                child: TextFormField(
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return "Zadejte minuty";
-                                                    }
-                                                    return null;
-                                                  },
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  onChanged: (value) {
-                                                    if (value.length == 2) {
-                                                      FocusScope.of(context)
-                                                          .nextFocus();
-                                                    }
-                                                  },
-                                                  textAlign: TextAlign.center,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    hintText: "M",
-                                                  ),
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter
-                                                        .digitsOnly,
-                                                    LengthLimitingTextInputFormatter(
-                                                      2,
+                                          FocusTraversalGroup(
+                                            child: Row(
+                                              children: [
+                                                // minuty
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte minuty";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (value.length == 2) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "M",
                                                     ),
-                                                    FilteringTextInputFormatter
-                                                        .allow(
-                                                      RegExp(
-                                                        r"^(0?[0-9]|[1-5][0-9])$",
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        2,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.all(4.0),
-                                                child: Text(
-                                                  ":",
-                                                  style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ),
-                                              // sekundy
-                                              SizedBox(
-                                                width: 50,
-                                                child: TextFormField(
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return "Zadejte sekundy";
-                                                    }
-                                                    return null;
-                                                  },
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  onChanged: (value) {
-                                                    if (value.length == 2) {
-                                                      FocusScope.of(context)
-                                                          .nextFocus();
-                                                    }
-                                                  },
-                                                  textAlign: TextAlign.center,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    hintText: "S",
-                                                  ),
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter
-                                                        .digitsOnly,
-                                                    LengthLimitingTextInputFormatter(
-                                                      2,
-                                                    ),
-                                                    FilteringTextInputFormatter
-                                                        .allow(
-                                                      RegExp(
-                                                        r"^(0?[0-9]|[1-5][0-9])$",
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                          r"^(0?[0-9]|[1-5][0-9])$",
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                                const Padding(
+                                                  padding: EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ":",
+                                                    style: TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // sekundy
+                                                SizedBox(
+                                                  width: 50,
+                                                  child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Zadejte sekundy";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    onChanged: (value) {
+                                                      if (value.length == 2) {
+                                                        FocusScope.of(context)
+                                                            .nextFocus();
+                                                      }
+                                                    },
+                                                    textAlign: TextAlign.center,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      hintText: "S",
+                                                    ),
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                      LengthLimitingTextInputFormatter(
+                                                        2,
+                                                      ),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                          r"^(0?[0-9]|[1-5][0-9])$",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -842,6 +868,24 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                                 DeafCheckCategory.old))
                                       DataCell(
                                         TextFormField(
+                                          controller: deafCheckDataTableTextEditingControllers[
+                                              selectedCompetition!.checks
+                                                  .whereType<DeafCheck>()
+                                                  .where((check) =>
+                                                      check.category ==
+                                                              DeafCheckCategory
+                                                                  .young &&
+                                                          newCompetitionCard[
+                                                                  "team"]
+                                                              .isYoung ||
+                                                      check.category ==
+                                                              DeafCheckCategory
+                                                                  .old &&
+                                                          !newCompetitionCard[
+                                                                  "team"]
+                                                              .isYoung)
+                                                  .toList()
+                                                  .indexOf(check)][i],
                                           inputFormatters: [
                                             LengthLimitingTextInputFormatter(1),
                                             UpperCaseTextFormatter(),
@@ -897,6 +941,54 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                       ),
                       startSeconds: getStartSeconds(),
                       finishSeconds: getFinishSeconds(),
+                      checks: [
+                        for (DeafCheck check in selectedCompetition!.checks
+                            .whereType<DeafCheck>())
+                          DeafCheck(
+                            number: check.number,
+                            name: check.name,
+                            type: check.type,
+                            category: check.category,
+                            questions: [
+                              for (Question question in check.questions)
+                                Question(
+                                  number: question.number,
+                                  penaltySeconds: question.penaltySeconds,
+                                  correctAnswer: question.correctAnswer,
+                                  answer: deafCheckDataTableTextEditingControllers[
+                                          selectedCompetition!.checks
+                                              .whereType<DeafCheck>()
+                                              .where((check) =>
+                                                  check.category ==
+                                                          DeafCheckCategory
+                                                              .young &&
+                                                      newCompetitionCard[
+                                                              // TODO: Otestovat
+                                                              "team"]
+                                                          .isYoung ||
+                                                  check.category ==
+                                                          DeafCheckCategory
+                                                              .old &&
+                                                      !newCompetitionCard[
+                                                              "team"]
+                                                          .isYoung)
+                                              .toList()
+                                              .indexOf(
+                                                  check)][question.number - 1]
+                                      .text,
+                                )
+                            ],
+                          ),
+                        for (LiveCheck check in selectedCompetition!.checks
+                            .whereType<LiveCheck>())
+                          LiveCheck(
+                            number: check.number,
+                            name: check.name,
+                            type: check.type,
+                            penaltySeconds: 0, // TODO
+                            waitSeconds: 0, // TODO
+                          ),
+                      ],
                     ),
                   );
 

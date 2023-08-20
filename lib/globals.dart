@@ -371,6 +371,7 @@ class Question {
     required this.number,
     required this.penaltySeconds,
     required this.correctAnswer,
+    this.answer,
   });
 }
 
@@ -444,6 +445,7 @@ class CompetitionCard {
     required this.team,
     required this.startSeconds,
     required this.finishSeconds,
+    required this.checks,
   });
 }
 
