@@ -32,6 +32,9 @@ class _CompetitionCardsState extends State<CompetitionCards> {
   List<List<TextEditingController>> deafCheckDataTableTextEditingControllers =
       [];
 
+  List<List<(TextEditingController, TextEditingController)>>
+      liveCheckDataTableTextEditingControllers = [];
+
   Map<String, dynamic> newCompetitionCard = {};
   int biggestQuestionsCount = 0;
 
@@ -91,11 +94,32 @@ class _CompetitionCardsState extends State<CompetitionCards> {
     ];
   }
 
+  void createLiveCheckDataTableTextEditingControllers() {
+    liveCheckDataTableTextEditingControllers = [
+      for (LiveCheck _ in selectedCompetition!.checks.whereType<LiveCheck>())
+        [
+          (
+            // trestný čas
+            TextEditingController(), // M
+            TextEditingController(), // S
+          ),
+          (
+            // čekačka
+            TextEditingController(), // M
+            TextEditingController(), // S
+          ),
+        ],
+    ];
+  }
+
   void createCompetitionCardDialog() {
     newCompetitionCard = {};
     deafCheckDataTableTextEditingControllers = [];
+    liveCheckDataTableTextEditingControllers = [];
     biggestQuestionsCount = getBiggestQuestionsCount(
-      selectedCompetition!.checks.whereType<DeafCheck>().toList(),
+      selectedCompetition!.checks
+          .whereType<DeafCheck>()
+          .toList(), //TODO: Otestovat různý počet otázek
     );
 
     _newCompetitionCardStartHoursController.text = "";
@@ -105,6 +129,8 @@ class _CompetitionCardsState extends State<CompetitionCards> {
     _newCompetitionCardFinishHoursController.text = "";
     _newCompetitionCardFinishMinutesController.text = "";
     _newCompetitionCardFinishSecondsController.text = "";
+
+    createLiveCheckDataTableTextEditingControllers(); //? Živé kontroly možná mají kategorie, pokud ano, potřeba předělat
 
     showDialog(
       context: context,
@@ -630,6 +656,15 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                                 SizedBox(
                                                   width: 50,
                                                   child: TextFormField(
+                                                    controller: liveCheckDataTableTextEditingControllers[
+                                                            selectedCompetition!
+                                                                .checks
+                                                                .whereType<
+                                                                    LiveCheck>()
+                                                                .toList()
+                                                                .indexOf(
+                                                                    check)][0]
+                                                        .$1,
                                                     validator: (value) {
                                                       if (value == null ||
                                                           value.isEmpty) {
@@ -680,6 +715,15 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                                 SizedBox(
                                                   width: 50,
                                                   child: TextFormField(
+                                                    controller: liveCheckDataTableTextEditingControllers[
+                                                            selectedCompetition!
+                                                                .checks
+                                                                .whereType<
+                                                                    LiveCheck>()
+                                                                .toList()
+                                                                .indexOf(
+                                                                    check)][0]
+                                                        .$2,
                                                     validator: (value) {
                                                       if (value == null ||
                                                           value.isEmpty) {
@@ -727,6 +771,15 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                                 SizedBox(
                                                   width: 50,
                                                   child: TextFormField(
+                                                    controller: liveCheckDataTableTextEditingControllers[
+                                                            selectedCompetition!
+                                                                .checks
+                                                                .whereType<
+                                                                    LiveCheck>()
+                                                                .toList()
+                                                                .indexOf(
+                                                                    check)][1]
+                                                        .$1,
                                                     validator: (value) {
                                                       if (value == null ||
                                                           value.isEmpty) {
@@ -777,6 +830,15 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                                 SizedBox(
                                                   width: 50,
                                                   child: TextFormField(
+                                                    controller: liveCheckDataTableTextEditingControllers[
+                                                            selectedCompetition!
+                                                                .checks
+                                                                .whereType<
+                                                                    LiveCheck>()
+                                                                .toList()
+                                                                .indexOf(
+                                                                    check)][1]
+                                                        .$2,
                                                     validator: (value) {
                                                       if (value == null ||
                                                           value.isEmpty) {
@@ -943,7 +1005,12 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                       finishSeconds: getFinishSeconds(),
                       checks: [
                         for (DeafCheck check in selectedCompetition!.checks
-                            .whereType<DeafCheck>())
+                            .whereType<DeafCheck>()
+                            .where((check) =>
+                                check.category == DeafCheckCategory.young &&
+                                    newCompetitionCard["team"].isYoung ||
+                                check.category == DeafCheckCategory.old &&
+                                    !newCompetitionCard["team"].isYoung))
                           DeafCheck(
                             number: check.number,
                             name: check.name,
@@ -955,28 +1022,29 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                   number: question.number,
                                   penaltySeconds: question.penaltySeconds,
                                   correctAnswer: question.correctAnswer,
-                                  answer: deafCheckDataTableTextEditingControllers[
-                                          selectedCompetition!.checks
-                                              .whereType<DeafCheck>()
-                                              .where((check) =>
-                                                  check.category ==
-                                                          DeafCheckCategory
-                                                              .young &&
-                                                      newCompetitionCard[
-                                                              // TODO: Otestovat
-                                                              "team"]
-                                                          .isYoung ||
-                                                  check.category ==
-                                                          DeafCheckCategory
-                                                              .old &&
-                                                      !newCompetitionCard[
-                                                              "team"]
-                                                          .isYoung)
-                                              .toList()
-                                              .indexOf(
-                                                  check)][question.number - 1]
-                                      .text,
-                                )
+                                  answer:
+                                      deafCheckDataTableTextEditingControllers[
+                                              selectedCompetition!.checks
+                                                  .whereType<DeafCheck>()
+                                                  .where((element) =>
+                                                      element.category ==
+                                                              DeafCheckCategory
+                                                                  .young &&
+                                                          newCompetitionCard[
+                                                                  "team"]
+                                                              .isYoung ||
+                                                      element.category ==
+                                                              DeafCheckCategory
+                                                                  .old &&
+                                                          !newCompetitionCard[
+                                                                  "team"]
+                                                              .isYoung)
+                                                  .toList()
+                                                  .indexOf(
+                                                      check)][question.number -
+                                              1]
+                                          .text,
+                                ),
                             ],
                           ),
                         for (LiveCheck check in selectedCompetition!.checks
@@ -985,8 +1053,40 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                             number: check.number,
                             name: check.name,
                             type: check.type,
-                            penaltySeconds: 0, // TODO
-                            waitSeconds: 0, // TODO
+                            penaltySeconds: int.parse(
+                                        liveCheckDataTableTextEditingControllers[
+                                                selectedCompetition!.checks
+                                                    .whereType<LiveCheck>()
+                                                    .toList()
+                                                    .indexOf(check)][0]
+                                            .$1
+                                            .text) *
+                                    60 +
+                                int.parse(
+                                    liveCheckDataTableTextEditingControllers[
+                                            selectedCompetition!.checks
+                                                .whereType<LiveCheck>()
+                                                .toList()
+                                                .indexOf(check)][0]
+                                        .$2
+                                        .text),
+                            waitSeconds: int.parse(
+                                        liveCheckDataTableTextEditingControllers[
+                                                selectedCompetition!.checks
+                                                    .whereType<LiveCheck>()
+                                                    .toList()
+                                                    .indexOf(check)][1]
+                                            .$1
+                                            .text) *
+                                    60 +
+                                int.parse(
+                                    liveCheckDataTableTextEditingControllers[
+                                            selectedCompetition!.checks
+                                                .whereType<LiveCheck>()
+                                                .toList()
+                                                .indexOf(check)][1]
+                                        .$2
+                                        .text),
                           ),
                       ],
                     ),
@@ -1005,8 +1105,8 @@ class _CompetitionCardsState extends State<CompetitionCards> {
 
                   saveData();
 
-                  setState(() {});
                   Navigator.pop(context);
+                  setState(() {});
                 }
               },
               child: const Text("Přidat"),
