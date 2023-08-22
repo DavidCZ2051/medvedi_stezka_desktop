@@ -112,7 +112,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
     ];
   }
 
-  void createCompetitionCardDialog() {
+  void createCompetitionCardDialog() async {
     newCompetitionCard = {};
     deafCheckDataTableTextEditingControllers = [];
     liveCheckDataTableTextEditingControllers = [];
@@ -132,7 +132,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
 
     createLiveCheckDataTableTextEditingControllers(); //? Živé kontroly možná mají kategorie, pokud ano, potřeba předělat
 
-    showDialog(
+    var result = await showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
@@ -983,7 +983,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop(false);
               },
               child: const Text("Zrušit"),
             ),
@@ -1105,8 +1105,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
 
                   saveData();
 
-                  Navigator.pop(context);
-                  setState(() {});
+                  Navigator.of(context).pop(true);
                 }
               },
               child: const Text("Přidat"),
@@ -1115,6 +1114,10 @@ class _CompetitionCardsState extends State<CompetitionCards> {
         ),
       ),
     );
+
+    if (result == true) {
+      setState(() {});
+    }
   }
 
   @override

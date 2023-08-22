@@ -201,7 +201,14 @@ class Competition {
         ];
 
   int getPlace(CompetitionCard card) {
-    int position = 0;
+    int position = 1;
+
+    for (CompetitionCard otherCard in cards) {
+      if (otherCard.getTotalSeconds() < card.getTotalSeconds()) {
+        position++;
+      }
+    }
+
     return position;
   }
 
