@@ -83,12 +83,12 @@ class _CompetitionState extends State<Competition> {
                 label: Text("Kontroly"),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.emoji_events),
-                label: Text("Výsledky"),
-              ),
-              NavigationRailDestination(
                 icon: Icon(Icons.badge),
                 label: Text("Karty"),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.emoji_events),
+                label: Text("Výsledky"),
               ),
             ],
           ),
@@ -102,8 +102,8 @@ class _CompetitionState extends State<Competition> {
                 Organizations(),
                 Teams(),
                 Checks(),
-                Results(),
                 CompetitionCards(),
+                Results(),
               ],
             ),
           ),
