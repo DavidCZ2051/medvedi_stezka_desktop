@@ -67,10 +67,6 @@ class _CompetitionState extends State<Competition> {
             ),
             destinations: const [
               NavigationRailDestination(
-                icon: Icon(Icons.home),
-                label: Text("Soutěž"),
-              ),
-              NavigationRailDestination(
                 icon: Icon(Icons.business),
                 label: Text("Jednoty"),
               ),
@@ -98,7 +94,6 @@ class _CompetitionState extends State<Competition> {
               physics: const NeverScrollableScrollPhysics(),
               controller: pageController,
               children: const <Widget>[
-                Placeholder(),
                 Organizations(),
                 Teams(),
                 Checks(),

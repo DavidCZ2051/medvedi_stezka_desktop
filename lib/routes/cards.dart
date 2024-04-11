@@ -112,6 +112,65 @@ class _CompetitionCardsState extends State<CompetitionCards> {
     ];
   }
 
+  void viewCompetitionCardDialog(CompetitionCard competitionCard) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Karta"),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Číslo týmu: ${competitionCard.team.number}"),
+                    Text("Jednota: ${competitionCard.team.organization}"),
+                    Text("Kategorie: ${competitionCard.team.category}"),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Členové: "),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${competitionCard.team.members[0].firstName} ${competitionCard.team.members[0].lastName} ${competitionCard.team.members[0].birthYear}",
+                            ),
+                            Text(
+                              "${competitionCard.team.members[1].firstName} ${competitionCard.team.members[1].lastName} ${competitionCard.team.members[1].birthYear}",
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "Start: ${competitionCard.startSeconds ~/ 3600}:${(competitionCard.startSeconds % 3600) ~/ 60}:${competitionCard.startSeconds % 60}",
+                    ),
+                    Text(
+                      "Cíl: ${competitionCard.finishSeconds ~/ 3600}:${(competitionCard.finishSeconds % 3600) ~/ 60}:${competitionCard.finishSeconds % 60}",
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("Zavřít"),
+          ),
+        ],
+      ),
+    );
+  }
+
   void createCompetitionCardDialog() async {
     newCompetitionCard = {};
     deafCheckDataTableTextEditingControllers = [];
@@ -130,7 +189,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
     _newCompetitionCardFinishMinutesController.text = "";
     _newCompetitionCardFinishSecondsController.text = "";
 
-    createLiveCheckDataTableTextEditingControllers(); //? Živé kontroly možná mají kategorie, pokud ano, potřeba předělat
+    createLiveCheckDataTableTextEditingControllers(); //TODO: Živé kontroly možná mají kategorie, pokud ano, potřeba předělat
 
     var result = await showDialog(
       context: context,
@@ -1144,9 +1203,18 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Počet karet: ${selectedCompetition!.cards.length}",
-                      style: const TextStyle(fontSize: 18),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Počet karet: ${selectedCompetition!.cards.length}",
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          "Zbývá karet: ${selectedCompetition!.teams.length - selectedCompetition!.cards.length}",
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
                     ),
                   ),
                   for (CompetitionCard card in selectedCompetition!.cards)
@@ -1198,6 +1266,15 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                             "${card.team.number}",
                             style: const TextStyle(fontSize: 20),
                           ),
+                          title: Text(
+                            "${card.team.members[0].firstName} ${card.team.members[0].lastName}, ${card.team.members[1].firstName} ${card.team.members[1].lastName}",
+                          ),
+                          subtitle: Text(
+                            card.team.organization,
+                          ),
+                          onTap: () {
+                            viewCompetitionCardDialog(card);
+                          },
                         ),
                       ),
                     ),

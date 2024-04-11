@@ -33,7 +33,6 @@ dependencies:
 
   windows_single_instance: ^1.0.1
   shared_preferences: ^2.2.2
-  adaptive_scrollbar: ^2.1.2
 
 dev_dependencies:
   flutter_test:
