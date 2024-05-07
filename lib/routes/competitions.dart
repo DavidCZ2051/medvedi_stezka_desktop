@@ -24,11 +24,19 @@ class _CompetitionsState extends State<Competitions> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Data"),
-        content: SingleChildScrollView(
-          child: TextField(
-            controller: TextEditingController(text: data),
-            readOnly: true,
-          ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SelectableText(
+                "C:\\Users\\david\\AppData\\Roaming\\com.example\\medvedi_stezka"),
+            SingleChildScrollView(
+              child: TextField(
+                controller: TextEditingController(text: data),
+                readOnly: true,
+              ),
+            ),
+          ],
         ),
         actions: [
           TextButton(
