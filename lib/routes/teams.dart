@@ -12,8 +12,37 @@ class Teams extends StatefulWidget {
 
 class _TeamsState extends State<Teams> {
   final _newTeamFormKey = GlobalKey<FormState>();
+  TextEditingController searchController = TextEditingController();
 
   Map<String, dynamic> newTeam = {};
+
+  List<Team> search() {
+    if (searchController.text.isEmpty || searchController.text == "") {
+      return selectedCompetition!.teams;
+    }
+
+    return selectedCompetition!.teams.where((team) {
+      return team.category
+              .toString()
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase()) ||
+          team.organization
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase()) ||
+          team.members[0].firstName
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase()) ||
+          team.members[0].lastName
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase()) ||
+          team.members[1].firstName
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase()) ||
+          team.members[1].lastName
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase());
+    }).toList();
+  }
 
   void createTeamDialog() {
     newTeam = {};
@@ -205,6 +234,12 @@ class _TeamsState extends State<Teams> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    searchController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -226,14 +261,42 @@ class _TeamsState extends State<Teams> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Počet hlídek: ${selectedCompetition!.teams.length}",
-                      style: const TextStyle(fontSize: 18),
-                    ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Počet hlídek: ${search().length}",
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 300,
+                          child: TextField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              labelText: "Hledat",
+                              prefixIcon: const Icon(Icons.search),
+                              suffix: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    searchController.clear();
+                                  });
+                                },
+                                icon: const Icon(Icons.clear),
+                              ),
+                            ),
+                            onChanged: (_) {
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  for (Team team in selectedCompetition!.teams)
+                  for (Team team in search())
                     Card(
                       child: InkWell(
                         onSecondaryTapDown: (TapDownDetails tap) {
