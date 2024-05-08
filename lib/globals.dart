@@ -204,6 +204,7 @@ class Competition {
     int position = 1;
 
     for (CompetitionCard otherCard in cards) {
+      if (otherCard.team.category != card.team.category) continue;
       if (otherCard.getTotalSeconds() < card.getTotalSeconds()) {
         position++;
       }
