@@ -8,8 +8,8 @@ List<Competition> competitions = [];
 Competition? selectedCompetition;
 
 enum DeafCheckCategory {
-  young, // 1-2
-  old; // 3-5
+  young, // 1-3
+  old; // 4-5
 
   @override
   String toString() {
@@ -47,15 +47,15 @@ enum TeamCategory {
   String toString() {
     switch (this) {
       case TeamCategory.one:
-        return "Mladší I";
+        return "Mladší žákyně I";
       case TeamCategory.twoFemale:
         return "Mladší žákyně II";
       case TeamCategory.twoMale:
         return "Mladší žáci II";
       case TeamCategory.threeFemale:
-        return "Starší žákyně III";
+        return "Mladší žákyně III";
       case TeamCategory.threeMale:
-        return "Starší žáci III";
+        return "Mladší žáci III";
       case TeamCategory.fourFemale:
         return "Starší žákyně IV";
       case TeamCategory.fourMale:
@@ -75,9 +75,9 @@ enum TeamCategory {
         return TeamCategory.twoFemale;
       case "Mladší žáci II":
         return TeamCategory.twoMale;
-      case "Starší žákyně III":
+      case "Mladší žákyně III":
         return TeamCategory.threeFemale;
-      case "Starší žáci III":
+      case "Mladší žáci III":
         return TeamCategory.threeMale;
       case "Starší žákyně IV":
         return TeamCategory.fourFemale;
@@ -268,8 +268,13 @@ class Team {
         ];
 
   bool get isYoung {
-    return [TeamCategory.one, TeamCategory.twoFemale, TeamCategory.twoMale]
-        .contains(category);
+    return [
+      TeamCategory.one,
+      TeamCategory.twoFemale,
+      TeamCategory.twoMale,
+      TeamCategory.threeFemale,
+      TeamCategory.threeMale,
+    ].contains(category);
   }
 
   Team({
