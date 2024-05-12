@@ -69,7 +69,7 @@ enum TeamCategory {
 
   static TeamCategory? fromString(String string) {
     switch (string) {
-      case "Mladší I":
+      case "Mladší žákyně I":
         return TeamCategory.one;
       case "Mladší žákyně II":
         return TeamCategory.twoFemale;

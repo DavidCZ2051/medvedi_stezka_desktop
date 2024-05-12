@@ -40,7 +40,8 @@ class _TeamsState extends State<Teams> {
               .contains(searchController.text.toLowerCase()) ||
           team.members[1].lastName
               .toLowerCase()
-              .contains(searchController.text.toLowerCase());
+              .contains(searchController.text.toLowerCase()) ||
+          team.number.toString().contains(searchController.text);
     }).toList();
   }
 
@@ -123,25 +124,6 @@ class _TeamsState extends State<Teams> {
                         Flexible(
                           child: TextFormField(
                             decoration: const InputDecoration(
-                              labelText: "Jméno",
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Zadejte jméno";
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              setState(() {
-                                newTeam["firstName$i"] = value;
-                              });
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: TextFormField(
-                            decoration: const InputDecoration(
                               labelText: "Příjmení",
                             ),
                             validator: (value) {
@@ -153,6 +135,25 @@ class _TeamsState extends State<Teams> {
                             onSaved: (value) {
                               setState(() {
                                 newTeam["lastName$i"] = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: "Jméno",
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Zadejte jméno";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                newTeam["firstName$i"] = value;
                               });
                             },
                           ),
