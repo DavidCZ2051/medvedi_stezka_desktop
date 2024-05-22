@@ -68,7 +68,17 @@ class _TeamsState extends State<Teams> {
                       for (TeamCategory category in TeamCategory.values)
                         DropdownMenuItem(
                           value: category,
-                          child: Text("$category"),
+                          child: Row(
+                            children: [
+                              Container(
+                                color: category.getColor(),
+                                width: 16,
+                                height: 16,
+                              ),
+                              const SizedBox(width: 8),
+                              Text("$category"),
+                            ],
+                          ),
                         ),
                     ],
                     validator: (value) {

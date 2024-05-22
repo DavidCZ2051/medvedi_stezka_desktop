@@ -1,4 +1,5 @@
 // packages
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 const String appVersion = "1.0.0-DEV";
@@ -33,7 +34,8 @@ enum DeafCheckCategory {
 }
 
 enum TeamCategory {
-  one,
+  oneFemale,
+  oneMale,
   twoFemale,
   twoMale,
   threeFemale,
@@ -46,8 +48,10 @@ enum TeamCategory {
   @override
   String toString() {
     switch (this) {
-      case TeamCategory.one:
+      case TeamCategory.oneFemale:
         return "Mladší žákyně I";
+      case TeamCategory.oneMale:
+        return "Mladší žáci I";
       case TeamCategory.twoFemale:
         return "Mladší žákyně II";
       case TeamCategory.twoMale:
@@ -70,7 +74,9 @@ enum TeamCategory {
   static TeamCategory? fromString(String string) {
     switch (string) {
       case "Mladší žákyně I":
-        return TeamCategory.one;
+        return TeamCategory.oneFemale;
+      case "Mladší žáci I":
+        return TeamCategory.oneMale;
       case "Mladší žákyně II":
         return TeamCategory.twoFemale;
       case "Mladší žáci II":
@@ -89,6 +95,33 @@ enum TeamCategory {
         return TeamCategory.grownupMale;
     }
     return null;
+  }
+
+  MaterialColor getColor() {
+    switch (this) {
+      case TeamCategory.oneFemale:
+        return Colors.pink;
+      case TeamCategory.oneMale:
+        return Colors.blue;
+      case TeamCategory.twoFemale:
+        return Colors.pink;
+      case TeamCategory.twoMale:
+        return Colors.blue;
+      case TeamCategory.threeFemale:
+        return Colors.pink;
+      case TeamCategory.threeMale:
+        return Colors.blue;
+      case TeamCategory.fourFemale:
+        return Colors.pink;
+      case TeamCategory.fourMale:
+        return Colors.blue;
+      case TeamCategory.grownupFemale:
+        return Colors.pink;
+      case TeamCategory.grownupMale:
+        return Colors.blue;
+      default:
+        return Colors.green;
+    }
   }
 }
 
@@ -269,7 +302,8 @@ class Team {
 
   bool get isYoung {
     return [
-      TeamCategory.one,
+      TeamCategory.oneFemale,
+      TeamCategory.oneMale,
       TeamCategory.twoFemale,
       TeamCategory.twoMale,
       TeamCategory.threeFemale,
