@@ -83,9 +83,9 @@ class _CompetitionCardsState extends State<CompetitionCards> {
       for (DeafCheck check in selectedCompetition!.checks
           .whereType<DeafCheck>()
           .where((check) =>
-              check.category == DeafCheckCategory.young &&
+              check.category == CheckCategory.young &&
                   newCompetitionCard["team"].isYoung ||
-              check.category == DeafCheckCategory.old &&
+              check.category == CheckCategory.old &&
                   !newCompetitionCard["team"].isYoung))
         [
           for (int i = 0; i < check.questions.length; i++)
@@ -668,279 +668,295 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                 ),
                               ),
                               const Spacer(),
-                              DataTable(
-                                border: TableBorder.all(),
-                                columns: const [
-                                  DataColumn(
-                                    label: Text(
-                                      "Kontrola",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Text(
-                                      "Trestný čas",
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Text(
-                                      "Čekačka",
-                                      style: TextStyle(
-                                        fontSize: 16,
+                              if (newCompetitionCard["team"] != null)
+                                DataTable(
+                                  border: TableBorder.all(),
+                                  columns: const [
+                                    DataColumn(
+                                      label: Text(
+                                        "Kontrola",
+                                        style: TextStyle(fontSize: 16),
                                       ),
                                     ),
-                                  ),
-                                ],
-                                rows: [
-                                  for (LiveCheck check in selectedCompetition!
-                                      .checks
-                                      .whereType<LiveCheck>())
-                                    DataRow(
-                                      cells: [
-                                        DataCell(
-                                          Text(
-                                            "Ž${check.number} - ${check.name}",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                        DataCell(
-                                          FocusTraversalGroup(
-                                            child: Row(
-                                              children: [
-                                                // minuty
-                                                SizedBox(
-                                                  width: 50,
-                                                  child: TextFormField(
-                                                    controller: liveCheckDataTableTextEditingControllers[
-                                                            selectedCompetition!
-                                                                .checks
-                                                                .whereType<
-                                                                    LiveCheck>()
-                                                                .toList()
-                                                                .indexOf(
-                                                                    check)][0]
-                                                        .$1,
-                                                    validator: (value) {
-                                                      if (value == null ||
-                                                          value.isEmpty) {
-                                                        return "Zadejte minuty";
-                                                      }
-                                                      return null;
-                                                    },
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    onChanged: (value) {
-                                                      if (value.length == 2) {
-                                                        FocusScope.of(context)
-                                                            .nextFocus();
-                                                      }
-                                                    },
-                                                    textAlign: TextAlign.center,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      hintText: "M",
-                                                    ),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .digitsOnly,
-                                                      LengthLimitingTextInputFormatter(
-                                                        2,
-                                                      ),
-                                                      FilteringTextInputFormatter
-                                                          .allow(
-                                                        RegExp(
-                                                          r"^(0?[0-9]|[1-5][0-9])$",
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                const Padding(
-                                                  padding: EdgeInsets.all(4.0),
-                                                  child: Text(
-                                                    ":",
-                                                    style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ),
-                                                // sekundy
-                                                SizedBox(
-                                                  width: 50,
-                                                  child: TextFormField(
-                                                    controller: liveCheckDataTableTextEditingControllers[
-                                                            selectedCompetition!
-                                                                .checks
-                                                                .whereType<
-                                                                    LiveCheck>()
-                                                                .toList()
-                                                                .indexOf(
-                                                                    check)][0]
-                                                        .$2,
-                                                    validator: (value) {
-                                                      if (value == null ||
-                                                          value.isEmpty) {
-                                                        return "Zadejte sekundy";
-                                                      }
-                                                      return null;
-                                                    },
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    onChanged: (value) {
-                                                      if (value.length == 2) {
-                                                        FocusScope.of(context)
-                                                            .nextFocus();
-                                                      }
-                                                    },
-                                                    textAlign: TextAlign.center,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      hintText: "S",
-                                                    ),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .digitsOnly,
-                                                      LengthLimitingTextInputFormatter(
-                                                        2,
-                                                      ),
-                                                      FilteringTextInputFormatter
-                                                          .allow(
-                                                        RegExp(
-                                                          r"^(0?[0-9]|[1-5][0-9])$",
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        DataCell(
-                                          FocusTraversalGroup(
-                                            child: Row(
-                                              children: [
-                                                // minuty
-                                                SizedBox(
-                                                  width: 50,
-                                                  child: TextFormField(
-                                                    controller: liveCheckDataTableTextEditingControllers[
-                                                            selectedCompetition!
-                                                                .checks
-                                                                .whereType<
-                                                                    LiveCheck>()
-                                                                .toList()
-                                                                .indexOf(
-                                                                    check)][1]
-                                                        .$1,
-                                                    validator: (value) {
-                                                      if (value == null ||
-                                                          value.isEmpty) {
-                                                        return "Zadejte minuty";
-                                                      }
-                                                      return null;
-                                                    },
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    onChanged: (value) {
-                                                      if (value.length == 2) {
-                                                        FocusScope.of(context)
-                                                            .nextFocus();
-                                                      }
-                                                    },
-                                                    textAlign: TextAlign.center,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      hintText: "M",
-                                                    ),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .digitsOnly,
-                                                      LengthLimitingTextInputFormatter(
-                                                        2,
-                                                      ),
-                                                      FilteringTextInputFormatter
-                                                          .allow(
-                                                        RegExp(
-                                                          r"^(0?[0-9]|[1-5][0-9])$",
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                const Padding(
-                                                  padding: EdgeInsets.all(4.0),
-                                                  child: Text(
-                                                    ":",
-                                                    style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ),
-                                                // sekundy
-                                                SizedBox(
-                                                  width: 50,
-                                                  child: TextFormField(
-                                                    controller: liveCheckDataTableTextEditingControllers[
-                                                            selectedCompetition!
-                                                                .checks
-                                                                .whereType<
-                                                                    LiveCheck>()
-                                                                .toList()
-                                                                .indexOf(
-                                                                    check)][1]
-                                                        .$2,
-                                                    validator: (value) {
-                                                      if (value == null ||
-                                                          value.isEmpty) {
-                                                        return "Zadejte sekundy";
-                                                      }
-                                                      return null;
-                                                    },
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    onChanged: (value) {
-                                                      if (value.length == 2) {
-                                                        FocusScope.of(context)
-                                                            .nextFocus();
-                                                      }
-                                                    },
-                                                    textAlign: TextAlign.center,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      hintText: "S",
-                                                    ),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .digitsOnly,
-                                                      LengthLimitingTextInputFormatter(
-                                                        2,
-                                                      ),
-                                                      FilteringTextInputFormatter
-                                                          .allow(
-                                                        RegExp(
-                                                          r"^(0?[0-9]|[1-5][0-9])$",
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                    DataColumn(
+                                      label: Text(
+                                        "Trestný čas",
+                                        style: TextStyle(fontSize: 16),
+                                      ),
                                     ),
-                                ],
-                              ),
+                                    DataColumn(
+                                      label: Text(
+                                        "Čekačka",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  rows: [
+                                    for (LiveCheck check in selectedCompetition!
+                                        .checks
+                                        .whereType<LiveCheck>()
+                                        .where((check) =>
+                                            (newCompetitionCard["team"]
+                                                    .isYoung &&
+                                                check.category ==
+                                                    CheckCategory.young) ||
+                                            (!newCompetitionCard["team"]
+                                                    .isYoung &&
+                                                check.category ==
+                                                    CheckCategory.old)))
+                                      DataRow(
+                                        cells: [
+                                          DataCell(
+                                            Text(
+                                              "Ž${check.number} - ${check.name} - ${check.category}",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            FocusTraversalGroup(
+                                              child: Row(
+                                                children: [
+                                                  // minuty
+                                                  SizedBox(
+                                                    width: 50,
+                                                    child: TextFormField(
+                                                      controller: liveCheckDataTableTextEditingControllers[
+                                                              selectedCompetition!
+                                                                  .checks
+                                                                  .whereType<
+                                                                      LiveCheck>()
+                                                                  .toList()
+                                                                  .indexOf(
+                                                                      check)][0]
+                                                          .$1,
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return "Zadejte minuty";
+                                                        }
+                                                        return null;
+                                                      },
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        if (value.length == 2) {
+                                                          FocusScope.of(context)
+                                                              .nextFocus();
+                                                        }
+                                                      },
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        hintText: "M",
+                                                      ),
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly,
+                                                        LengthLimitingTextInputFormatter(
+                                                          2,
+                                                        ),
+                                                        FilteringTextInputFormatter
+                                                            .allow(
+                                                          RegExp(
+                                                            r"^(0?[0-9]|[1-5][0-9])$",
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const Padding(
+                                                    padding:
+                                                        EdgeInsets.all(4.0),
+                                                    child: Text(
+                                                      ":",
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // sekundy
+                                                  SizedBox(
+                                                    width: 50,
+                                                    child: TextFormField(
+                                                      controller: liveCheckDataTableTextEditingControllers[
+                                                              selectedCompetition!
+                                                                  .checks
+                                                                  .whereType<
+                                                                      LiveCheck>()
+                                                                  .toList()
+                                                                  .indexOf(
+                                                                      check)][0]
+                                                          .$2,
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return "Zadejte sekundy";
+                                                        }
+                                                        return null;
+                                                      },
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        if (value.length == 2) {
+                                                          FocusScope.of(context)
+                                                              .nextFocus();
+                                                        }
+                                                      },
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        hintText: "S",
+                                                      ),
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly,
+                                                        LengthLimitingTextInputFormatter(
+                                                          2,
+                                                        ),
+                                                        FilteringTextInputFormatter
+                                                            .allow(
+                                                          RegExp(
+                                                            r"^(0?[0-9]|[1-5][0-9])$",
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            FocusTraversalGroup(
+                                              child: Row(
+                                                children: [
+                                                  // minuty
+                                                  SizedBox(
+                                                    width: 50,
+                                                    child: TextFormField(
+                                                      controller: liveCheckDataTableTextEditingControllers[
+                                                              selectedCompetition!
+                                                                  .checks
+                                                                  .whereType<
+                                                                      LiveCheck>()
+                                                                  .toList()
+                                                                  .indexOf(
+                                                                      check)][1]
+                                                          .$1,
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return "Zadejte minuty";
+                                                        }
+                                                        return null;
+                                                      },
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        if (value.length == 2) {
+                                                          FocusScope.of(context)
+                                                              .nextFocus();
+                                                        }
+                                                      },
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        hintText: "M",
+                                                      ),
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly,
+                                                        LengthLimitingTextInputFormatter(
+                                                          2,
+                                                        ),
+                                                        FilteringTextInputFormatter
+                                                            .allow(
+                                                          RegExp(
+                                                            r"^(0?[0-9]|[1-5][0-9])$",
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const Padding(
+                                                    padding:
+                                                        EdgeInsets.all(4.0),
+                                                    child: Text(
+                                                      ":",
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // sekundy
+                                                  SizedBox(
+                                                    width: 50,
+                                                    child: TextFormField(
+                                                      controller: liveCheckDataTableTextEditingControllers[
+                                                              selectedCompetition!
+                                                                  .checks
+                                                                  .whereType<
+                                                                      LiveCheck>()
+                                                                  .toList()
+                                                                  .indexOf(
+                                                                      check)][1]
+                                                          .$2,
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return "Zadejte sekundy";
+                                                        }
+                                                        return null;
+                                                      },
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        if (value.length == 2) {
+                                                          FocusScope.of(context)
+                                                              .nextFocus();
+                                                        }
+                                                      },
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        hintText: "S",
+                                                      ),
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly,
+                                                        LengthLimitingTextInputFormatter(
+                                                          2,
+                                                        ),
+                                                        FilteringTextInputFormatter
+                                                            .allow(
+                                                          RegExp(
+                                                            r"^(0?[0-9]|[1-5][0-9])$",
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
+                                ),
                               const Spacer(),
                             ],
                           ),
@@ -961,18 +977,19 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                           border: TableBorder.all(),
                           columns: [
                             for (DeafCheck check in selectedCompetition!.checks
-                                .whereType<DeafCheck>())
-                              if ((newCompetitionCard["team"].isYoung &&
-                                      check.category ==
-                                          DeafCheckCategory.young) ||
-                                  (!newCompetitionCard["team"].isYoung &&
-                                      check.category == DeafCheckCategory.old))
-                                DataColumn(
-                                  label: Text(
-                                    "H${check.number} - ${check.name}",
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
+                                .whereType<DeafCheck>()
+                                .where((check) =>
+                                    (newCompetitionCard["team"].isYoung &&
+                                        check.category ==
+                                            CheckCategory.young) ||
+                                    (!newCompetitionCard["team"].isYoung &&
+                                        check.category == CheckCategory.old)))
+                              DataColumn(
+                                label: Text(
+                                  "H${check.number} - ${check.name} - ${check.category}",
+                                  style: const TextStyle(fontSize: 16),
                                 ),
+                              ),
                           ],
                           rows: [
                             for (int i = 0; i < biggestQuestionsCount; i++)
@@ -980,55 +997,59 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                 cells: [
                                   for (DeafCheck check in selectedCompetition!
                                       .checks
-                                      .whereType<DeafCheck>())
-                                    if ((newCompetitionCard["team"].isYoung &&
-                                            check.category ==
-                                                DeafCheckCategory.young) ||
-                                        (!newCompetitionCard["team"].isYoung &&
-                                            check.category ==
-                                                DeafCheckCategory.old))
-                                      DataCell(
-                                        TextFormField(
-                                          controller: deafCheckDataTableTextEditingControllers[
-                                              selectedCompetition!.checks
-                                                  .whereType<DeafCheck>()
-                                                  .where((check) =>
-                                                      check.category ==
-                                                              DeafCheckCategory
-                                                                  .young &&
-                                                          newCompetitionCard[
-                                                                  "team"]
-                                                              .isYoung ||
-                                                      check.category ==
-                                                              DeafCheckCategory
-                                                                  .old &&
-                                                          !newCompetitionCard[
-                                                                  "team"]
-                                                              .isYoung)
-                                                  .toList()
-                                                  .indexOf(check)][i],
-                                          inputFormatters: [
-                                            LengthLimitingTextInputFormatter(1),
-                                            UpperCaseTextFormatter(),
-                                          ],
-                                          decoration: InputDecoration(
-                                            hintText: "${i + 1}",
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return "Zadejte odpověď";
-                                            }
-                                            return null;
-                                          },
-                                          onChanged: (value) {
-                                            if (value.isNotEmpty) {
-                                              FocusScope.of(context)
-                                                  .nextFocus();
-                                            }
-                                          },
+                                      .whereType<DeafCheck>()
+                                      .where((check) =>
+                                          (newCompetitionCard["team"].isYoung &&
+                                              check.category ==
+                                                  CheckCategory.young) ||
+                                          (!newCompetitionCard["team"]
+                                                  .isYoung &&
+                                              check.category ==
+                                                  CheckCategory.old)))
+                                    DataCell(
+                                      TextFormField(
+                                        controller:
+                                            deafCheckDataTableTextEditingControllers[
+                                                selectedCompetition!
+                                                    .checks
+                                                    .whereType<DeafCheck>()
+                                                    .where((check) =>
+                                                        check
+                                                                    .category ==
+                                                                CheckCategory
+                                                                    .young &&
+                                                            newCompetitionCard[
+                                                                    "team"]
+                                                                .isYoung ||
+                                                        check
+                                                                    .category ==
+                                                                CheckCategory
+                                                                    .old &&
+                                                            !newCompetitionCard[
+                                                                    "team"]
+                                                                .isYoung)
+                                                    .toList()
+                                                    .indexOf(check)][i],
+                                        inputFormatters: [
+                                          LengthLimitingTextInputFormatter(1),
+                                          UpperCaseTextFormatter(),
+                                        ],
+                                        decoration: InputDecoration(
+                                          hintText: "${i + 1}",
                                         ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Zadejte odpověď";
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (value) {
+                                          if (value.isNotEmpty) {
+                                            FocusScope.of(context).nextFocus();
+                                          }
+                                        },
                                       ),
+                                    ),
                                 ],
                               ),
                           ],
@@ -1066,9 +1087,9 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                         for (DeafCheck check in selectedCompetition!.checks
                             .whereType<DeafCheck>()
                             .where((check) =>
-                                check.category == DeafCheckCategory.young &&
+                                check.category == CheckCategory.young &&
                                     newCompetitionCard["team"].isYoung ||
-                                check.category == DeafCheckCategory.old &&
+                                check.category == CheckCategory.old &&
                                     !newCompetitionCard["team"].isYoung))
                           DeafCheck(
                             number: check.number,
@@ -1087,13 +1108,13 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                                   .whereType<DeafCheck>()
                                                   .where((element) =>
                                                       element.category ==
-                                                              DeafCheckCategory
+                                                              CheckCategory
                                                                   .young &&
                                                           newCompetitionCard[
                                                                   "team"]
                                                               .isYoung ||
                                                       element.category ==
-                                                              DeafCheckCategory
+                                                              CheckCategory
                                                                   .old &&
                                                           !newCompetitionCard[
                                                                   "team"]
@@ -1107,10 +1128,16 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                             ],
                           ),
                         for (LiveCheck check in selectedCompetition!.checks
-                            .whereType<LiveCheck>())
+                            .whereType<LiveCheck>()
+                            .where((check) =>
+                                check.category == CheckCategory.young &&
+                                    newCompetitionCard["team"].isYoung ||
+                                check.category == CheckCategory.old &&
+                                    !newCompetitionCard["team"].isYoung))
                           LiveCheck(
                             number: check.number,
                             name: check.name,
+                            category: check.category,
                             type: check.type,
                             penaltySeconds: int.parse(
                                         liveCheckDataTableTextEditingControllers[

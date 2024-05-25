@@ -20,15 +20,12 @@ class _ChecksState extends State<Checks> {
   bool isCheckNumberOccupied(
     int number,
     CheckType type,
-    DeafCheckCategory? category,
+    CheckCategory category,
   ) {
     for (Check check in selectedCompetition!.checks) {
-      if (check.number == number && check.type == type && category == null) {
-        return true;
-      } else if (check.number == number &&
+      if (check.number == number &&
           check.type == type &&
-          category != null &&
-          (check as DeafCheck).category == category) {
+          category == check.category) {
         return true;
       }
     }
@@ -133,17 +130,43 @@ class _ChecksState extends State<Checks> {
                       onChanged: (value) {
                         setState(() {
                           newCheck["type"] = value;
-                          if (value == CheckType.live) {
-                            newCheck["category"] = null;
-                          }
                         });
                       },
                       onSaved: (value) {
                         setState(() {
                           newCheck["type"] = value;
-                          if (value == CheckType.live) {
-                            newCheck["category"] = null;
-                          }
+                        });
+                      },
+                    ),
+                    DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                        labelText: "Kategorie kontroly",
+                      ),
+                      value: newCheck["category"],
+                      items: [
+                        DropdownMenuItem(
+                          value: CheckCategory.young,
+                          child: Text("${CheckCategory.young}"),
+                        ),
+                        DropdownMenuItem(
+                          value: CheckCategory.old,
+                          child: Text("${CheckCategory.old}"),
+                        ),
+                      ],
+                      validator: (value) {
+                        if (value == null) {
+                          return "Vyberte kategorii kontroly";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          newCheck["category"] = value;
+                        });
+                      },
+                      onSaved: (value) {
+                        setState(() {
+                          newCheck["category"] = value;
                         });
                       },
                     ),
@@ -192,41 +215,6 @@ class _ChecksState extends State<Checks> {
                       Column(
                         children: <Widget>[
                           const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: DropdownButtonFormField(
-                              decoration: const InputDecoration(
-                                labelText: "Kategorie kontroly",
-                              ),
-                              value: newCheck["category"],
-                              items: [
-                                DropdownMenuItem(
-                                  value: DeafCheckCategory.young,
-                                  child: Text("${DeafCheckCategory.young}"),
-                                ),
-                                DropdownMenuItem(
-                                  value: DeafCheckCategory.old,
-                                  child: Text("${DeafCheckCategory.old}"),
-                                ),
-                              ],
-                              validator: (value) {
-                                if (value == null) {
-                                  return "Vyberte kategorii kontroly";
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                setState(() {
-                                  newCheck["category"] = value;
-                                });
-                              },
-                              onSaved: (value) {
-                                setState(() {
-                                  newCheck["category"] = value;
-                                });
-                              },
-                            ),
-                          ),
                           OutlinedButton(
                             onPressed: () async {
                               TimeOfDay? time = await showTimePicker(
@@ -362,6 +350,7 @@ class _ChecksState extends State<Checks> {
                         : LiveCheck(
                             number: newCheck["number"],
                             name: newCheck["name"],
+                            category: newCheck["category"],
                             type: CheckType.live,
                           ),
                   );
@@ -463,7 +452,7 @@ class _ChecksState extends State<Checks> {
                         },
                         child: ListTile(
                           leading: Text(
-                            "Ž${check.number}",
+                            "Ž${check.number} (${(check as LiveCheck).category})",
                             style: const TextStyle(fontSize: 20),
                           ),
                           title: Text(check.name),

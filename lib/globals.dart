@@ -8,26 +8,26 @@ List<Competition> competitions = [];
 
 Competition? selectedCompetition;
 
-enum DeafCheckCategory {
+enum CheckCategory {
   young, // 1-3
   old; // 4-5
 
   @override
   String toString() {
     switch (this) {
-      case DeafCheckCategory.young:
+      case CheckCategory.young:
         return "Mladší";
-      case DeafCheckCategory.old:
+      case CheckCategory.old:
         return "Starší";
     }
   }
 
-  static DeafCheckCategory? fromString(String string) {
+  static CheckCategory? fromString(String string) {
     switch (string) {
       case "Mladší":
-        return DeafCheckCategory.young;
+        return CheckCategory.young;
       case "Starší":
-        return DeafCheckCategory.old;
+        return CheckCategory.old;
     }
     return null;
   }
@@ -323,17 +323,18 @@ class Check {
   int number;
   String name;
   CheckType type;
+  CheckCategory category;
 
   Check({
     required this.number,
     required this.name,
     required this.type,
+    required this.category,
   });
 }
 
 class DeafCheck extends Check {
   List<Question> questions = [];
-  DeafCheckCategory category;
 
   Map<String, dynamic> toJson() => {
         "number": number,
@@ -349,7 +350,7 @@ class DeafCheck extends Check {
     return DeafCheck(
       number: json["number"],
       name: json["name"],
-      category: DeafCheckCategory.fromString(json["category"])!,
+      category: CheckCategory.fromString(json["category"])!,
       type: CheckType.fromString(json["type"])!,
       questions: <Question>[
         for (Map question in json["questions"])
@@ -366,7 +367,7 @@ class DeafCheck extends Check {
     required super.number,
     required super.name,
     required super.type,
-    required this.category,
+    required super.category,
     required this.questions,
   });
 }
@@ -378,6 +379,7 @@ class LiveCheck extends Check {
   Map<String, dynamic> toJson() => {
         "number": number,
         "name": name,
+        "category": category.toString(),
         "type": type.toString(),
         "penaltySeconds": penaltySeconds,
         "waitSeconds": waitSeconds,
@@ -387,6 +389,7 @@ class LiveCheck extends Check {
     return LiveCheck(
       number: json["number"],
       name: json["name"],
+      category: CheckCategory.fromString(json["category"])!,
       type: CheckType.fromString(json["type"])!,
       penaltySeconds: json["penaltySeconds"],
       waitSeconds: json["waitSeconds"],
@@ -397,6 +400,7 @@ class LiveCheck extends Check {
     required super.number,
     required super.name,
     required super.type,
+    required super.category,
     this.penaltySeconds,
     this.waitSeconds,
   });
