@@ -986,7 +986,7 @@ class _CompetitionCardsState extends State<CompetitionCards> {
                                         check.category == CheckCategory.old)))
                               DataColumn(
                                 label: Text(
-                                  "H${check.number} - ${check.name} - ${check.category}",
+                                  "H${check.number}",
                                   style: const TextStyle(fontSize: 16),
                                 ),
                               ),

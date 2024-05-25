@@ -358,6 +358,7 @@ class DeafCheck extends Check {
             number: question["number"],
             penaltySeconds: question["penaltySeconds"],
             correctAnswer: question["correctAnswer"],
+            answer: question["answer"],
           ),
       ],
     );
@@ -416,6 +417,7 @@ class Question {
         "number": number,
         "penaltySeconds": penaltySeconds,
         "correctAnswer": correctAnswer,
+        "answer": answer,
       };
 
   Question({

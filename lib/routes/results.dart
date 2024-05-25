@@ -45,8 +45,18 @@ class _ResultsState extends State<Results> {
                   for (TeamCategory category in TeamCategory.values)
                     DropdownMenuItem(
                       value: category,
-                      child: Text(
-                        category.toString(),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 16,
+                            height: 16,
+                            color: category.getColor(),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            category.toString(),
+                          ),
+                        ],
                       ),
                     ),
                 ],
