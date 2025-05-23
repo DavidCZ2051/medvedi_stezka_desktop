@@ -1,6 +1,6 @@
 # medvedi_stezka
 
-A new Flutter project.
+Desktopová aplikace pro operační systémy Windows sloužící pro správu a hodnocení soutěží medvědí stezky.
 
 ## Getting Started
 
