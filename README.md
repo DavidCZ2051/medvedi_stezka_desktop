@@ -1,6 +1,6 @@
 # medvedi_stezka
 
-Desktopová aplikace pro operační systémy Windows sloužící pro správu a hodnocení soutěží medvědí stezky.
+Desktopová aplikace pro operační systémy Windows sloužící pro správu a vyhodnocování soutěží medvědí stezky.
 
 ## Getting Started
 
